@@ -1,6 +1,6 @@
 {
   "_meta": {
-    "version": "2.0",
+    "version": "2.1",
     "updated": "2026-06-11",
     "description": "Движок правил для анализа портфеля. Используется сборщиком, письмами и Telegram ботами.",
     "thresholds": {
@@ -462,20 +462,164 @@
     ],
     "screener": {
       "cheap_growth": {
+        "description": "Недооценённые перспективные акции — горизонт 3-6 месяцев",
         "max_price": 500,
-        "min_daily_change_pct": 0.5,
-        "min_volume_rub": 5000000,
-        "volume_growth_pct": 20,
-        "description": "Акции до 500 руб. с ростом цены и объёма — горизонт 3-6 месяцев"
+        "filters": {
+          "price": {
+            "max": 500,
+            "min": 5,
+            "reason": "Исключаем копеечные акции (<5 руб.) — часто это компании-зомби"
+          },
+          "liquidity": {
+            "min_daily_turnover_rub": 5000000,
+            "reason": "Минимум 5 млн руб. оборота — иначе не продать без потерь в цене"
+          },
+          "daily_change": {
+            "min_pct": 0.3,
+            "max_pct": 15.0,
+            "reason": "Рост более 15% за день — подозрительно, скорее манипуляция"
+          }
+        },
+        "scoring": {
+          "description": "Каждая акция получает балл от 0 до 100. Чем выше — тем перспективнее.",
+          "criteria": [
+            {
+              "id": "VOLUME_SUSTAINED",
+              "name": "Устойчивый рост объёма",
+              "weight": 25,
+              "condition": "volume_3day_avg > volume_10day_avg * 1.3",
+              "description": "Средний объём за 3 дня превышает среднее за 10 дней на 30%+ — системный набор позиции",
+              "signal": "strong_positive"
+            },
+            {
+              "id": "VOLUME_MOMENTUM",
+              "name": "Ускорение объёма",
+              "weight": 20,
+              "condition": "volume_today > volume_yesterday * 1.5 and volume_yesterday > volume_2days_ago * 1.2",
+              "description": "Объём растёт 3 дня подряд с ускорением — классический сигнал начала движения",
+              "signal": "strong_positive"
+            },
+            {
+              "id": "PRICE_MOMENTUM",
+              "name": "Ценовой моментум",
+              "weight": 20,
+              "condition": "price_change_3day > 0 and price_change_today > 0",
+              "description": "Цена растёт 3+ дня подряд — устойчивый восходящий тренд",
+              "signal": "positive"
+            },
+            {
+              "id": "NEAR_YEAR_LOW",
+              "name": "Отскок от годового минимума",
+              "weight": 15,
+              "condition": "price <= year_low * 1.15 and price_change_today > 0",
+              "description": "Акция у годового минимума (+15%), но начинает расти с объёмом — точка входа",
+              "signal": "positive"
+            },
+            {
+              "id": "DIVIDEND_HISTORY",
+              "name": "Дивидендная история",
+              "weight": 10,
+              "condition": "dividend_years >= 2",
+              "description": "Компания платила дивиденды 2+ года подряд — признак стабильного бизнеса",
+              "signal": "positive"
+            },
+            {
+              "id": "SECTOR_FAVORABLE",
+              "name": "Перспективный сектор",
+              "weight": 10,
+              "condition": "sector in ['retail', 'technology', 'consumer', 'transport', 'agriculture']",
+              "description": "Ритейл, IT, потребитель, транспорт, агро — понятные бизнес-модели с внутренним спросом",
+              "signal": "positive"
+            },
+            {
+              "id": "NO_NEGATIVE_NEWS",
+              "name": "Отсутствие негативных новостей",
+              "weight": 10,
+              "condition": "negative_news_14days == 0",
+              "description": "Нет негативных новостей за последние 14 дней — рост органический",
+              "signal": "positive"
+            },
+            {
+              "id": "AVOID_RISKY_SECTORS",
+              "name": "Исключить рискованные секторы",
+              "weight": -20,
+              "condition": "sector in ['metals', 'oil', 'finance_risky', 'construction']",
+              "description": "Металлурги, нефтянка, рискованные финансы — дешёвые акции там часто дёшевы по причине",
+              "signal": "penalty"
+            },
+            {
+              "id": "PRICE_RECOVERY_TRAP",
+              "name": "Ловушка отскока",
+              "weight": -15,
+              "condition": "price_change_30day < -20 and price_change_today > 3",
+              "description": "Акция упала >20% за месяц и сегодня резко отскочила — вероятно временная коррекция, не разворот",
+              "signal": "penalty"
+            }
+          ]
+        },
+        "grade_thresholds": {
+          "A": {
+            "min_score": 75,
+            "label": "Высокий потенциал",
+            "emoji": "🟢"
+          },
+          "B": {
+            "min_score": 50,
+            "label": "Умеренный потенциал",
+            "emoji": "🟡"
+          },
+          "C": {
+            "min_score": 30,
+            "label": "Наблюдать",
+            "emoji": "🟠"
+          },
+          "D": {
+            "min_score": 0,
+            "label": "Слабый сигнал",
+            "emoji": "🔴"
+          }
+        },
+        "output_format": {
+          "show_top_n": 8,
+          "sort_by": "score",
+          "fields": [
+            "ticker",
+            "name",
+            "price",
+            "change_pct",
+            "volume",
+            "volume_vs_avg",
+            "score",
+            "grade",
+            "reasons"
+          ]
+        }
       },
       "top_volume": {
+        "description": "Топ акции по обороту — индикатор интереса рынка",
         "min_turnover_rub": 100000000,
         "top_n": 10,
-        "description": "Топ акции по обороту — индикатор интереса рынка"
+        "show_fields": [
+          "ticker",
+          "name",
+          "price",
+          "change_pct",
+          "turnover",
+          "turnover_vs_yesterday"
+        ]
       },
       "ipo_watch": {
+        "description": "Новые размещения за последнюю неделю",
         "days_since_listing": 7,
-        "description": "Новые размещения за последнюю неделю"
+        "show_fields": [
+          "ticker",
+          "name",
+          "listing_date",
+          "price",
+          "change_since_ipo",
+          "volume",
+          "ai_assessment"
+        ]
       }
     },
     "advisor": {
