@@ -302,10 +302,25 @@ async function loadScreener(){
 
     const byGrowth=[...items].filter(d=>d.LAST<500&&d.LAST>1&&d.CHANGE&&d.CHANGE>0)
       .sort((a,b)=>(b.CHANGE/b.PREVPRICE)-(a.CHANGE/a.PREVPRICE)).slice(0,8);
+
+    // Save volume history for growth stocks
+    const weekKey = getWeekKey();
+    const volHistory = JSON.parse(localStorage.getItem('volHistory')||'{}');
+    if(!volHistory[weekKey]) volHistory[weekKey]={};
+    byGrowth.forEach(d=>{ volHistory[weekKey][d.SECID]=(volHistory[weekKey][d.SECID]||0)+d.VALTODAY; });
+    // Keep only last 4 weeks
+    const weeks = Object.keys(volHistory).sort().slice(-4);
+    const trimmed = {}; weeks.forEach(w=>trimmed[w]=volHistory[w]);
+    localStorage.setItem('volHistory', JSON.stringify(trimmed));
+
     document.getElementById('growth-list').innerHTML=byGrowth.map(d=>{
       const pct=d.PREVPRICE?(d.LAST-d.PREVPRICE)/d.PREVPRICE*100:0;
+      const volTrend = getVolTrend(d.SECID, trimmed, weekKey);
       return `<div class="sc-item">
-        <div><div class="si-name">${d.NAME}</div><div class="si-ticker">${d.SECID} · до 500 ₽</div></div>
+        <div>
+          <div class="si-name">${d.NAME}</div>
+          <div class="si-ticker">${d.SECID} · ${fmtVol(d.VALTODAY)} ₽ ${volTrend}</div>
+        </div>
         <div><div class="si-price">${fmt(d.LAST)} ₽</div><div class="si-ch up">+${pct.toFixed(1)}%</div></div>
       </div>`;
     }).join('')||'<div style="padding:16px;color:var(--muted);font-size:0.8rem;text-align:center;">Нет данных</div>';
@@ -355,6 +370,27 @@ async function loadAnalyst(){
     box.innerHTML=`<div class="lesson-num">СВОДКА · ${today.toUpperCase()}</div>${renderMd(text)}`;
   }catch(e){box.innerHTML='<p style="color:var(--red)">Ошибка — попробуй ещё раз.</p>';}
   btn.disabled=false;
+}
+
+function getWeekKey(){
+  const d=new Date(), y=d.getFullYear();
+  const start=new Date(y,0,1);
+  const week=Math.ceil(((d-start)/86400000+start.getDay()+1)/7);
+  return y+'-W'+String(week).padStart(2,'0');
+}
+
+function getVolTrend(ticker, history, currentWeek){
+  const weeks=Object.keys(history).sort();
+  if(weeks.length<2) return '';
+  const prevWeek=weeks[weeks.length-2];
+  if(prevWeek===currentWeek||!history[prevWeek]) return '';
+  const prev=history[prevWeek][ticker]||0;
+  const curr=history[currentWeek][ticker]||0;
+  if(!prev||!curr) return '';
+  const diff=(curr-prev)/prev*100;
+  if(diff>10) return '<span style="color:var(--green);font-size:0.68rem;">▲'+diff.toFixed(0)+'%</span>';
+  if(diff<-10) return '<span style="color:var(--red);font-size:0.68rem;">▼'+Math.abs(diff).toFixed(0)+'%</span>';
+  return '<span style="color:var(--muted);font-size:0.68rem;">→</span>';
 }
 
 async function loadAll(){
