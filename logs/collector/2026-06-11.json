@@ -1,7 +1,7 @@
 {
   "meta": {
     "date": "2026-06-11",
-    "time": "13:30",
+    "time": "13:36",
     "month": 6,
     "weekday": 3,
     "is_friday": false
@@ -21,7 +21,7 @@
     "is_cached": false
   },
   "portfolio": {
-    "total_value": 278415.0,
+    "total_value": 278429.0,
     "total_change": 0.0,
     "total_pct": 0.0,
     "positions": [
@@ -29,11 +29,11 @@
         "ticker": "X5",
         "name": "Корп. центр X5",
         "qty": 42,
-        "price": 2394.5,
-        "change": 0.0,
+        "price": 2395,
+        "change": 0,
         "pct": 0.0,
-        "value": 100569.0,
-        "day_rub": 0.0
+        "value": 100590,
+        "day_rub": 0
       },
       {
         "ticker": "LENT",
@@ -59,10 +59,10 @@
         "ticker": "BELU",
         "name": "Novabev Group",
         "qty": 12,
-        "price": 302.4,
+        "price": 301.8,
         "change": 0.0,
         "pct": 0.0,
-        "value": 3629.0,
+        "value": 3622.0,
         "day_rub": 0.0
       },
       {
@@ -79,39 +79,39 @@
   },
   "quotes": {
     "BELU": {
-      "price": 302.4,
-      "prev": 302.4,
+      "price": 301.8,
+      "prev": 301.8,
       "change": 0.0,
       "pct": 0.0,
-      "volume": 77614663
+      "volume": 78235575
     },
     "LENT": {
       "price": 1835,
       "prev": 1835,
       "change": 0,
       "pct": 0.0,
-      "volume": 26735047
+      "volume": 26995704
     },
     "SBER": {
       "price": 321.75,
       "prev": 321.75,
       "change": 0.0,
       "pct": 0.0,
-      "volume": 2203202172
+      "volume": 2220907552
     },
     "X5": {
-      "price": 2394.5,
-      "prev": 2394.5,
-      "change": 0.0,
+      "price": 2395,
+      "prev": 2395,
+      "change": 0,
       "pct": 0.0,
-      "volume": 551279195
+      "volume": 552881041
     },
     "TGLD": {
       "price": 11.51,
       "prev": 11.51,
       "change": 0.0,
       "pct": 0.0,
-      "volume": 11874978
+      "volume": 11878949
     }
   },
   "screener": {
@@ -119,92 +119,92 @@
       {
         "ticker": "SMLT",
         "name": "Самолет ао",
-        "price": 403.6,
-        "prev": 403.6,
+        "price": 400.8,
+        "prev": 400.8,
         "change": 0.0,
         "pct": 0.0,
-        "volume": 10434798811
+        "volume": 10530951642
       },
       {
         "ticker": "SBER",
         "name": "Сбербанк",
-        "price": 321.75,
-        "prev": 321.75,
+        "price": 321.76,
+        "prev": 321.76,
         "change": 0.0,
         "pct": 0.0,
-        "volume": 2203202172
+        "volume": 2220908195
       },
       {
         "ticker": "T",
         "name": "Т-Техно ао",
-        "price": 297.8,
-        "prev": 297.8,
+        "price": 297.84,
+        "prev": 297.84,
         "change": 0.0,
         "pct": 0.0,
-        "volume": 1673760408
+        "volume": 1679169692
       },
       {
         "ticker": "GAZP",
         "name": "ГАЗПРОМ ао",
-        "price": 112.72,
-        "prev": 112.72,
+        "price": 112.75,
+        "prev": 112.75,
         "change": 0.0,
         "pct": 0.0,
-        "volume": 1621793728
+        "volume": 1638869498
       },
       {
         "ticker": "LKOH",
         "name": "ЛУКОЙЛ",
-        "price": 4735.5,
-        "prev": 4735.5,
-        "change": 0.0,
+        "price": 4741,
+        "prev": 4741,
+        "change": 0,
         "pct": 0.0,
-        "volume": 1545462357
+        "volume": 1565136687
       },
       {
         "ticker": "OZON",
         "name": "Озон",
-        "price": 3868,
-        "prev": 3868,
+        "price": 3858,
+        "prev": 3858,
         "change": 0,
         "pct": 0.0,
-        "volume": 1364179975
+        "volume": 1377442475
       },
       {
         "ticker": "NVTK",
         "name": "Новатэк ао",
-        "price": 1052.4,
-        "prev": 1052.4,
+        "price": 1052.9,
+        "prev": 1052.9,
         "change": 0.0,
         "pct": 0.0,
-        "volume": 1304061986
+        "volume": 1312220902
       },
       {
         "ticker": "RUAL",
         "name": "РУСАЛ ао",
-        "price": 33.72,
-        "prev": 33.72,
+        "price": 33.67,
+        "prev": 33.67,
         "change": 0.0,
         "pct": 0.0,
-        "volume": 1287165005
+        "volume": 1293600118
       },
       {
         "ticker": "PLZL",
         "name": "Полюс",
-        "price": 1959,
-        "prev": 1959,
-        "change": 0,
+        "price": 1964.6,
+        "prev": 1964.6,
+        "change": 0.0,
         "pct": 0.0,
-        "volume": 1221975906
+        "volume": 1256167299
       },
       {
         "ticker": "ROSN",
         "name": "Роснефть",
-        "price": 369.05,
-        "prev": 369.05,
+        "price": 369.25,
+        "prev": 369.25,
         "change": 0.0,
         "pct": 0.0,
-        "volume": 1198940611
+        "volume": 1211522248
       }
     ],
     "cheap_growth": []
@@ -218,7 +218,7 @@
       "price": 11.51,
       "change": 0.0,
       "pct": 0.0,
-      "volume": 11874978,
+      "volume": 11878949,
       "score": 25,
       "grade": "🔴 D",
       "reasons": [
