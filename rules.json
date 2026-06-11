@@ -1396,7 +1396,7 @@
       },
       {
         "name": "Нефть (рублёвая)",
-        "ticker": "OILR",
+        "ticker": "BR-",
         "board": "TQTF",
         "type": "etf",
         "currency": "RUB",
@@ -1415,7 +1415,7 @@
       },
       {
         "name": "Серебро",
-        "ticker": "SLVR",
+        "ticker": "SILV",
         "board": "TQTF",
         "type": "etf",
         "currency": "RUB",
