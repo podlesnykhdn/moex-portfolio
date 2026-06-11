@@ -9,70 +9,89 @@
 :root{--bg:#0b0e1a;--surface:#111827;--surface2:#1a2235;--border:#1f2d45;--accent:#3b82f6;--green:#10b981;--red:#ef4444;--warn:#f59e0b;--text:#e2e8f0;--muted:#64748b;}
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
-header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 28px;display:flex;align-items:center;justify-content:space-between;height:56px;}
-.logo{font-family:'JetBrains Mono',monospace;font-size:0.9rem;color:var(--accent);}
+
+/* HEADER */
+header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:52px;}
+.logo{font-family:'JetBrains Mono',monospace;font-size:0.85rem;color:var(--accent);}
 .logo span{color:var(--muted);}
-.refresh-btn{background:none;border:1px solid var(--border);color:var(--muted);border-radius:6px;padding:5px 12px;font-size:0.75rem;cursor:pointer;font-family:'Inter',sans-serif;}
+.refresh-btn{background:none;border:1px solid var(--border);color:var(--muted);border-radius:6px;padding:4px 10px;font-size:0.72rem;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap;}
 .refresh-btn:hover{border-color:var(--accent);color:var(--accent);}
-nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 28px;display:flex;gap:2px;}
-.tab{padding:11px 18px;font-size:0.85rem;font-weight:500;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all 0.15s;user-select:none;}
+
+/* NAV */
+nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 20px;display:flex;gap:0;overflow-x:auto;}
+nav::-webkit-scrollbar{display:none;}
+.tab{padding:10px 14px;font-size:0.82rem;font-weight:500;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all 0.15s;user-select:none;white-space:nowrap;}
 .tab:hover{color:var(--text);}.tab.active{color:var(--accent);border-bottom-color:var(--accent);}
-main{max-width:980px;margin:0 auto;padding:28px 16px;}
+
+/* LAYOUT */
+main{max-width:980px;margin:0 auto;padding:20px 12px;}
 .panel{display:none;}.panel.active{display:block;}
-.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:24px;}
-.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 18px;}
-.card .lbl{font-size:0.68rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:5px;}
-.card .val{font-size:1.25rem;font-weight:700;font-family:'JetBrains Mono',monospace;}
+
+/* CARDS */
+.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:20px;}
+@media(min-width:480px){.cards{grid-template-columns:repeat(4,1fr);}}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px;}
+.card .lbl{font-size:0.65rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);margin-bottom:4px;}
+.card .val{font-size:1.15rem;font-weight:700;font-family:'JetBrains Mono',monospace;}
 .up{color:var(--green);}.dn{color:var(--red);}.neu{color:var(--muted);}
-.section-title{font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:12px;margin-top:24px;}
-.tbl-wrap{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:24px;}
-table{width:100%;border-collapse:collapse;}
-th{background:#0d1525;padding:10px 14px;text-align:left;font-size:0.68rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);font-weight:600;}
-td{padding:12px 14px;border-top:1px solid var(--border);font-size:0.85rem;}
+
+/* TABLE — scrollable on mobile */
+.section-title{font-size:0.7rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:10px;margin-top:20px;}
+.tbl-wrap{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:20px;overflow-x:auto;}
+table{width:100%;border-collapse:collapse;min-width:560px;}
+th{background:#0d1525;padding:9px 12px;text-align:left;font-size:0.65rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);font-weight:600;white-space:nowrap;}
+td{padding:11px 12px;border-top:1px solid var(--border);font-size:0.82rem;}
 tr:hover td{background:var(--surface2);}
-.mono{font-family:'JetBrains Mono',monospace;font-size:0.8rem;}
-.badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:0.7rem;font-weight:600;}
+.mono{font-family:'JetBrains Mono',monospace;font-size:0.78rem;}
+.badge{display:inline-block;padding:2px 7px;border-radius:20px;font-size:0.68rem;font-weight:600;}
 .badge.yes{background:#052e16;color:#4ade80;border:1px solid #166534;}
 .badge.no{background:#1c1004;color:#fbbf24;border:1px solid #92400e;}
 .badge.etf{background:#0c1a3a;color:#60a5fa;border:1px solid #1d4ed8;}
-.notice{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 20px;color:var(--muted);font-size:0.82rem;margin-bottom:16px;line-height:1.6;}
+
+/* NOTICE */
+.notice{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 18px;color:var(--muted);font-size:0.8rem;margin-bottom:16px;line-height:1.6;}
 .notice strong{color:var(--warn);}
-.screener-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
-@media(max-width:600px){.screener-grid{grid-template-columns:1fr;}}
+
+/* SCREENER */
+.screener-grid{display:grid;grid-template-columns:1fr;gap:14px;}
+@media(min-width:640px){.screener-grid{grid-template-columns:1fr 1fr;}}
 .sc{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
-.sc-head{padding:12px 16px;border-bottom:1px solid var(--border);}
-.sc-head h3{font-size:0.82rem;font-weight:600;}
-.sc-head p{font-size:0.72rem;color:var(--muted);}
-.sc-item{padding:10px 16px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.sc-head{padding:12px 14px;border-bottom:1px solid var(--border);}
+.sc-head h3{font-size:0.8rem;font-weight:600;}
+.sc-head p{font-size:0.7rem;color:var(--muted);}
+.sc-item{padding:9px 14px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
 .sc-item:first-child{border-top:none;}
-.si-name{font-size:0.82rem;font-weight:500;}
-.si-ticker{font-size:0.7rem;color:var(--muted);font-family:'JetBrains Mono',monospace;}
-.si-price{font-size:0.85rem;font-weight:600;font-family:'JetBrains Mono',monospace;text-align:right;}
-.si-ch{font-size:0.72rem;text-align:right;}
-.ai-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
-.ai-header h2{font-size:0.95rem;font-weight:600;}
-.ai-header p{font-size:0.78rem;color:var(--muted);margin-top:2px;}
-.btn{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:0.82rem;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;}
+.si-name{font-size:0.8rem;font-weight:500;}
+.si-ticker{font-size:0.68rem;color:var(--muted);font-family:'JetBrains Mono',monospace;}
+.si-price{font-size:0.82rem;font-weight:600;font-family:'JetBrains Mono',monospace;text-align:right;}
+.si-ch{font-size:0.7rem;text-align:right;}
+
+/* AI */
+.ai-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:18px;}
+.ai-header h2{font-size:0.92rem;font-weight:600;}
+.ai-header p{font-size:0.75rem;color:var(--muted);margin-top:2px;}
+.btn{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:0.8rem;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap;}
 .btn:hover{opacity:0.85;}.btn:disabled{opacity:0.4;cursor:not-allowed;}
 .btn.green{background:var(--green);}
-.ai-box{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:24px 28px;min-height:160px;line-height:1.75;font-size:0.9rem;}
-.ai-box h3{font-size:0.9rem;font-weight:600;margin:14px 0 5px;color:var(--accent);}
+.ai-box{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px 22px;min-height:140px;line-height:1.75;font-size:0.88rem;}
+.ai-box h3{font-size:0.88rem;font-weight:600;margin:14px 0 5px;color:var(--accent);}
 .ai-box h3:first-child{margin-top:0;}
 .ai-box p{margin-bottom:8px;color:#cbd5e1;}
-.ai-box ul{padding-left:18px;margin-bottom:8px;}
+.ai-box ul{padding-left:16px;margin-bottom:8px;}
 .ai-box li{margin-bottom:4px;color:#cbd5e1;}
 .ai-box strong{color:var(--text);}
-.lesson-num{display:inline-block;background:var(--accent);color:#fff;font-size:0.68rem;font-weight:700;padding:2px 8px;border-radius:4px;margin-bottom:12px;font-family:'JetBrains Mono',monospace;}
-.placeholder{color:var(--muted);text-align:center;padding:40px 0;}
-.placeholder .icon{font-size:2rem;margin-bottom:10px;}
+.lesson-num{display:inline-block;background:var(--accent);color:#fff;font-size:0.65rem;font-weight:700;padding:2px 8px;border-radius:4px;margin-bottom:10px;font-family:'JetBrains Mono',monospace;}
+.placeholder{color:var(--muted);text-align:center;padding:36px 0;}
+.placeholder .icon{font-size:1.8rem;margin-bottom:8px;}
+.placeholder p{font-size:0.85rem;}
 </style>
 </head>
 <body>
 
 <header>
   <div class="logo">my_prodject_invest <span>/ MOEX</span></div>
-  <div style="display:flex;align-items:center;gap:12px;">
-    <span id="last-update" style="font-size:0.75rem;color:var(--muted)"></span>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <span id="last-update" style="font-size:0.72rem;color:var(--muted)"></span>
     <button class="refresh-btn" onclick="loadAll()">Обновить</button>
   </div>
 </header>
@@ -88,10 +107,10 @@ tr:hover td{background:var(--surface2);}
 
 <div class="panel active" id="tab-portfolio">
   <div class="cards">
-    <div class="card"><div class="lbl">Стоимость портфеля</div><div class="val" id="c-total">—</div></div>
-    <div class="card"><div class="lbl">Изменение за день</div><div class="val" id="c-change">—</div></div>
+    <div class="card"><div class="lbl">Стоимость</div><div class="val" id="c-total">—</div></div>
+    <div class="card"><div class="lbl">За день</div><div class="val" id="c-change">—</div></div>
     <div class="card"><div class="lbl">Позиций</div><div class="val">5</div></div>
-    <div class="card"><div class="lbl">Статус</div><div class="val" id="c-status" style="font-size:0.8rem;padding-top:4px">—</div></div>
+    <div class="card"><div class="lbl">Статус</div><div class="val" id="c-status" style="font-size:0.75rem;padding-top:4px">—</div></div>
   </div>
   <div id="portfolio-notice"></div>
   <div class="section-title">Мой портфель</div>
@@ -99,9 +118,9 @@ tr:hover td{background:var(--surface2);}
     <table>
       <thead><tr>
         <th>Компания</th><th>Тикер</th><th>Кол-во</th>
-        <th>Цена</th><th>Изм. за день</th><th>Объём торгов</th><th>Стоимость</th><th>Дивид.</th>
+        <th>Цена</th><th>Изм. за день</th><th>Объём</th><th>Стоимость</th><th>Дивид.</th>
       </tr></thead>
-      <tbody id="ptbody"><tr><td colspan="8" style="text-align:center;padding:20px;color:var(--muted);font-size:0.82rem;">Загрузка...</td></tr></tbody>
+      <tbody id="ptbody"><tr><td colspan="8" style="text-align:center;padding:20px;color:var(--muted);font-size:0.8rem;">Загрузка...</td></tr></tbody>
     </table>
   </div>
 </div>
@@ -112,18 +131,18 @@ tr:hover td{background:var(--surface2);}
   <div class="screener-grid">
     <div class="sc">
       <div class="sc-head"><h3>Топ по объёму торгов</h3><p>Самые активные бумаги сегодня</p></div>
-      <div id="vol-list"><div style="padding:20px;text-align:center;color:var(--muted);font-size:0.82rem;">Загрузка...</div></div>
+      <div id="vol-list"><div style="padding:18px;text-align:center;color:var(--muted);font-size:0.8rem;">Загрузка...</div></div>
     </div>
     <div class="sc">
-      <div class="sc-head"><h3>Недооценённые с потенциалом</h3><p>До 500 руб. и рост сегодня</p></div>
-      <div id="growth-list"><div style="padding:20px;text-align:center;color:var(--muted);font-size:0.82rem;">Загрузка...</div></div>
+      <div class="sc-head"><h3>Недооценённые с потенциалом</h3><p>До 500 руб. + рост сегодня</p></div>
+      <div id="growth-list"><div style="padding:18px;text-align:center;color:var(--muted);font-size:0.8rem;">Загрузка...</div></div>
     </div>
   </div>
 </div>
 
 <div class="panel" id="tab-mentor">
   <div class="ai-header">
-    <div><h2>Ментор — урок дня</h2><p>Обучение инвестициям с нуля, шаг за шагом</p></div>
+    <div><h2>Ментор — урок дня</h2><p>Обучение инвестициям с нуля</p></div>
     <button class="btn" id="btn-mentor" onclick="loadMentor()">Получить урок</button>
   </div>
   <div class="ai-box" id="mentor-box">
@@ -133,7 +152,7 @@ tr:hover td{background:var(--surface2);}
 
 <div class="panel" id="tab-analyst">
   <div class="ai-header">
-    <div><h2>Аналитик — сводка по портфелю</h2><p>Новости и факторы влияния на твои акции</p></div>
+    <div><h2>Аналитик — сводка</h2><p>Факторы влияния на портфель</p></div>
     <button class="btn green" id="btn-analyst" onclick="loadAnalyst()">Получить сводку</button>
   </div>
   <div class="ai-box" id="analyst-box">
@@ -145,188 +164,202 @@ tr:hover td{background:var(--surface2);}
 
 <script>
 const PORTFOLIO = [
-  {name:"Корп. центр X5", ticker:"X5",   qty:42,   div:true},
-  {name:"Лента",           ticker:"LENT",  qty:53,   div:false},
-  {name:"Сбербанк",        ticker:"SBER",  qty:74,   div:true},
-  {name:"Novabev Group",   ticker:"BELU",  qty:12,   div:true},
-  {name:"Фонд Золото",     ticker:"TGLD",  qty:4618, div:false, etf:true},
+  {name:"Корп. центр X5", ticker:"X5",   board:"TQBR", qty:42,   div:true},
+  {name:"Лента",           ticker:"LENT",  board:"TQBR", qty:53,   div:false},
+  {name:"Сбербанк",        ticker:"SBER",  board:"TQBR", qty:74,   div:true},
+  {name:"Novabev Group",   ticker:"BELU",  board:"TQBR", qty:12,   div:true},
+  {name:"Фонд Золото",     ticker:"TGLD",  board:"TQTF", qty:4618, div:false, etf:true},
 ];
 
 function switchTab(name) {
-  ['portfolio','screener','mentor','analyst'].forEach((n,i) => {
-    document.querySelectorAll('.tab')[i].classList.toggle('active', n===name);
-    document.getElementById('tab-'+n).classList.toggle('active', n===name);
+  ['portfolio','screener','mentor','analyst'].forEach((n,i)=>{
+    document.querySelectorAll('.tab')[i].classList.toggle('active',n===name);
+    document.getElementById('tab-'+n).classList.toggle('active',n===name);
   });
 }
 
-function fmt(n) { return new Intl.NumberFormat('ru-RU').format(Math.round(n)); }
-function fmtVol(v) {
-  if (!v || v===0) return '—';
-  if (v>=1e9) return (v/1e9).toFixed(1)+' B';
-  if (v>=1e6) return (v/1e6).toFixed(0)+' M';
-  if (v>=1e3) return (v/1e3).toFixed(0)+' K';
+function fmt(n){return new Intl.NumberFormat('ru-RU').format(Math.round(n));}
+function fmtVol(v){
+  if(!v||v===0)return '—';
+  if(v>=1e9)return (v/1e9).toFixed(1)+' B';
+  if(v>=1e6)return (v/1e6).toFixed(0)+' M';
+  if(v>=1e3)return (v/1e3).toFixed(0)+' K';
   return v;
 }
 
-// MOEX ISS API — works from Russian browser IPs
-async function moexGet(url) {
-  const resp = await fetch(url, {headers:{'Accept':'application/json'}});
-  if (!resp.ok) throw new Error('HTTP '+resp.status);
-  return resp.json();
+async function moexGet(url){
+  const r = await fetch(url,{headers:{'Accept':'application/json'}});
+  if(!r.ok) throw new Error('HTTP '+r.status);
+  return r.json();
 }
 
-async function loadPortfolio() {
-  const tickers = PORTFOLIO.map(p=>p.ticker).join(',');
-  const url = `https://iss.moex.com/iss/engines/stock/markets/shares/boards/TQBR/securities.json?securities=${tickers}&iss.meta=off&iss.only=marketdata`;
-  try {
-    const data = await moexGet(url);
+async function fetchQuotes(){
+  // Fetch shares (TQBR) and ETFs (TQTF) separately
+  const sharesTickers = PORTFOLIO.filter(p=>p.board==='TQBR').map(p=>p.ticker).join(',');
+  const etfTickers    = PORTFOLIO.filter(p=>p.board==='TQTF').map(p=>p.ticker).join(',');
+
+  const quotes = {};
+
+  // Parse helper
+  function parseMarketdata(data){
     const cols = data.marketdata.columns;
-    const quotes = {};
-    for (const row of data.marketdata.data) {
+    for(const row of data.marketdata.data){
       const d = Object.fromEntries(cols.map((c,i)=>[c,row[i]]));
       const price = d.LAST || d.PREVPRICE || 0;
       const prev  = d.PREVPRICE || price;
-      quotes[d.SECID] = {
-        price,
-        change: price - prev,
-        pct: prev ? (price-prev)/prev*100 : 0,
-        vol: d.VALTODAY || 0
-      };
+      if(price>0){
+        quotes[d.SECID]={
+          price, change:price-prev,
+          pct: prev?(price-prev)/prev*100:0,
+          vol: d.VALTODAY||0
+        };
+      }
     }
-    renderPortfolio(quotes, true);
-  } catch(e) {
-    console.log('MOEX portfolio error:', e.message);
-    renderPortfolio({}, false);
+  }
+
+  const [sharesData, etfData] = await Promise.all([
+    moexGet(`https://iss.moex.com/iss/engines/stock/markets/shares/boards/TQBR/securities.json?securities=${sharesTickers}&iss.meta=off&iss.only=marketdata`),
+    moexGet(`https://iss.moex.com/iss/engines/stock/markets/shares/boards/TQTF/securities.json?securities=${etfTickers}&iss.meta=off&iss.only=marketdata`),
+  ]);
+
+  parseMarketdata(sharesData);
+  parseMarketdata(etfData);
+  return quotes;
+}
+
+async function loadPortfolio(){
+  try{
+    const quotes = await fetchQuotes();
+    let totalVal=0, totalCh=0, hasData=false;
+    const rows = PORTFOLIO.map(pos=>{
+      const q=quotes[pos.ticker]||{};
+      const price=q.price||0, ch=q.change||0, pct=q.pct||0, vol=q.vol||0;
+      const posVal=price*pos.qty;
+      if(price>0) hasData=true;
+      totalVal+=posVal; totalCh+=ch*pos.qty;
+      const cls=ch>0?'up':ch<0?'dn':'neu', sign=ch>=0?'+':'';
+      const badge=pos.etf?'<span class="badge etf">ETF</span>':pos.div?'<span class="badge yes">Да</span>':'<span class="badge no">Нет</span>';
+      return `<tr>
+        <td>${pos.name}</td><td class="mono">${pos.ticker}</td><td class="mono">${fmt(pos.qty)}</td>
+        <td class="mono">${price?fmt(price)+' ₽':'—'}</td>
+        <td class="mono ${cls}">${price?(sign+ch.toFixed(2)+' ('+sign+pct.toFixed(1)+'%)'):'—'}</td>
+        <td class="mono">${fmtVol(vol)}</td>
+        <td class="mono">${price?fmt(posVal)+' ₽':'—'}</td>
+        <td>${badge}</td>
+      </tr>`;
+    });
+    document.getElementById('ptbody').innerHTML=rows.join('');
+    if(hasData){
+      const cls=totalCh>=0?'up':'dn', sign=totalCh>=0?'+':'';
+      document.getElementById('c-total').textContent=fmt(totalVal)+' ₽';
+      document.getElementById('c-change').className='val '+cls;
+      document.getElementById('c-change').textContent=sign+fmt(totalCh)+' ₽';
+      document.getElementById('c-status').textContent='MOEX Live';
+      document.getElementById('c-status').style.color='var(--green)';
+      document.getElementById('portfolio-notice').innerHTML='';
+    } else { showOffline(); }
+  } catch(e){
+    console.log('Portfolio error:',e.message);
+    showOffline();
   }
 }
 
-function renderPortfolio(quotes, live) {
-  let totalVal=0, totalCh=0;
-  const rows = PORTFOLIO.map(pos => {
-    const q = quotes[pos.ticker] || {};
-    const price=q.price||0, ch=q.change||0, pct=q.pct||0, vol=q.vol||0;
-    const posVal = price*pos.qty;
-    totalVal += posVal; totalCh += ch*pos.qty;
-    const cls = ch>0?'up':ch<0?'dn':'neu';
-    const sign = ch>=0?'+':'';
-    const badge = pos.etf?'<span class="badge etf">ETF</span>':pos.div?'<span class="badge yes">Да</span>':'<span class="badge no">Нет</span>';
-    return `<tr>
-      <td>${pos.name}</td><td class="mono">${pos.ticker}</td><td class="mono">${fmt(pos.qty)}</td>
-      <td class="mono">${price?fmt(price)+' руб.':'—'}</td>
-      <td class="mono ${cls}">${price?(sign+ch.toFixed(2)+' ('+sign+pct.toFixed(1)+'%)'):'—'}</td>
-      <td class="mono">${fmtVol(vol)}</td>
-      <td class="mono">${price?fmt(posVal)+' руб.':'—'}</td>
-      <td>${badge}</td>
-    </tr>`;
-  });
-  document.getElementById('ptbody').innerHTML = rows.join('');
-
-  if (live && totalVal > 0) {
-    const cls=totalCh>=0?'up':'dn', sign=totalCh>=0?'+':'';
-    document.getElementById('c-total').textContent = fmt(totalVal)+' руб.';
-    document.getElementById('c-change').className='val '+cls;
-    document.getElementById('c-change').textContent = sign+fmt(totalCh)+' руб.';
-    document.getElementById('c-status').textContent = 'MOEX Live';
-    document.getElementById('c-status').style.color = 'var(--green)';
-    document.getElementById('portfolio-notice').innerHTML = '';
-  } else {
-    document.getElementById('c-total').textContent = '~280 000 руб.';
-    document.getElementById('c-change').className='val neu';
-    document.getElementById('c-change').textContent = '—';
-    document.getElementById('c-status').textContent = 'Нет данных';
-    document.getElementById('c-status').style.color = 'var(--warn)';
-    document.getElementById('portfolio-notice').innerHTML =
-      '<div class="notice"><strong>Данные MOEX недоступны.</strong> Возможные причины: биржа закрыта (работает пн–пт 10:00–18:40 МСК), или браузер блокирует запрос. Попробуй открыть дашборд в Chrome без расширений.</div>';
-  }
+function showOffline(){
+  document.getElementById('c-total').textContent='~280 000 ₽';
+  document.getElementById('c-change').className='val neu';
+  document.getElementById('c-change').textContent='—';
+  document.getElementById('c-status').textContent='Нет данных';
+  document.getElementById('c-status').style.color='var(--warn)';
+  document.getElementById('portfolio-notice').innerHTML=
+    '<div class="notice"><strong>Данные MOEX недоступны.</strong> Биржа работает пн–пт 10:00–18:40 МСК. Открывай дашборд без VPN.</div>';
+  document.getElementById('ptbody').innerHTML=
+    PORTFOLIO.map(pos=>{
+      const badge=pos.etf?'<span class="badge etf">ETF</span>':pos.div?'<span class="badge yes">Да</span>':'<span class="badge no">Нет</span>';
+      return `<tr><td>${pos.name}</td><td class="mono">${pos.ticker}</td><td class="mono">${fmt(pos.qty)}</td>
+        <td class="mono neu">—</td><td class="mono neu">—</td><td class="mono neu">—</td><td class="mono neu">—</td><td>${badge}</td></tr>`;
+    }).join('');
 }
 
-async function loadScreener() {
-  const url = 'https://iss.moex.com/iss/engines/stock/markets/shares/boards/TQBR/securities.json?iss.meta=off&iss.only=marketdata,securities';
-  try {
-    const data = await moexGet(url);
+async function loadScreener(){
+  try{
+    const data = await moexGet('https://iss.moex.com/iss/engines/stock/markets/shares/boards/TQBR/securities.json?iss.meta=off&iss.only=marketdata,securities');
     const mc=data.marketdata.columns, sc=data.securities.columns;
     const names={};
-    for (const r of data.securities.data) {
-      const d=Object.fromEntries(sc.map((c,i)=>[c,r[i]]));
-      names[d.SECID]=d.SHORTNAME||d.SECID;
-    }
-    const items = data.marketdata.data
+    for(const r of data.securities.data){const d=Object.fromEntries(sc.map((c,i)=>[c,r[i]]));names[d.SECID]=d.SHORTNAME||d.SECID;}
+    const items=data.marketdata.data
       .map(r=>{const d=Object.fromEntries(mc.map((c,i)=>[c,r[i]]));return{...d,NAME:names[d.SECID]||d.SECID};})
       .filter(d=>d.LAST&&d.LAST>0);
 
-    const byVol = [...items].filter(d=>d.VALTODAY>0).sort((a,b)=>b.VALTODAY-a.VALTODAY).slice(0,8);
-    document.getElementById('vol-list').innerHTML = byVol.map(d=>{
+    const byVol=[...items].filter(d=>d.VALTODAY>0).sort((a,b)=>b.VALTODAY-a.VALTODAY).slice(0,8);
+    document.getElementById('vol-list').innerHTML=byVol.map(d=>{
       const pct=d.PREVPRICE?(d.LAST-d.PREVPRICE)/d.PREVPRICE*100:0;
       const cls=pct>=0?'up':'dn', sign=pct>=0?'+':'';
       return `<div class="sc-item">
-        <div><div class="si-name">${d.NAME}</div><div class="si-ticker">${d.SECID} · ${fmtVol(d.VALTODAY)} руб.</div></div>
-        <div><div class="si-price">${fmt(d.LAST)} руб.</div><div class="si-ch ${cls}">${sign}${pct.toFixed(1)}%</div></div>
+        <div><div class="si-name">${d.NAME}</div><div class="si-ticker">${d.SECID} · ${fmtVol(d.VALTODAY)} ₽</div></div>
+        <div><div class="si-price">${fmt(d.LAST)} ₽</div><div class="si-ch ${cls}">${sign}${pct.toFixed(1)}%</div></div>
       </div>`;
-    }).join('') || '<div style="padding:16px;color:var(--muted);font-size:0.82rem;text-align:center;">Нет данных</div>';
+    }).join('')||'<div style="padding:16px;color:var(--muted);font-size:0.8rem;text-align:center;">Нет данных</div>';
 
-    const byGrowth = [...items].filter(d=>d.LAST<500&&d.LAST>1&&d.CHANGE&&d.CHANGE>0)
+    const byGrowth=[...items].filter(d=>d.LAST<500&&d.LAST>1&&d.CHANGE&&d.CHANGE>0)
       .sort((a,b)=>(b.CHANGE/b.PREVPRICE)-(a.CHANGE/a.PREVPRICE)).slice(0,8);
-    document.getElementById('growth-list').innerHTML = byGrowth.map(d=>{
+    document.getElementById('growth-list').innerHTML=byGrowth.map(d=>{
       const pct=d.PREVPRICE?(d.LAST-d.PREVPRICE)/d.PREVPRICE*100:0;
       return `<div class="sc-item">
-        <div><div class="si-name">${d.NAME}</div><div class="si-ticker">${d.SECID} · до 500 руб.</div></div>
-        <div><div class="si-price">${fmt(d.LAST)} руб.</div><div class="si-ch up">+${pct.toFixed(1)}%</div></div>
+        <div><div class="si-name">${d.NAME}</div><div class="si-ticker">${d.SECID} · до 500 ₽</div></div>
+        <div><div class="si-price">${fmt(d.LAST)} ₽</div><div class="si-ch up">+${pct.toFixed(1)}%</div></div>
       </div>`;
-    }).join('') || '<div style="padding:16px;color:var(--muted);font-size:0.82rem;text-align:center;">Нет данных</div>';
+    }).join('')||'<div style="padding:16px;color:var(--muted);font-size:0.8rem;text-align:center;">Нет данных</div>';
 
-    document.getElementById('screener-notice').innerHTML = '';
-  } catch(e) {
-    console.log('Screener error:', e.message);
-    document.getElementById('screener-notice').innerHTML =
-      '<div class="notice"><strong>Скринер недоступен.</strong> Данные MOEX загружаются только в торговые часы (пн–пт, 10:00–18:40 МСК) и только в браузере без VPN/блокировщиков.</div>';
-    document.getElementById('vol-list').innerHTML = '';
-    document.getElementById('growth-list').innerHTML = '';
+    document.getElementById('screener-notice').innerHTML='';
+  } catch(e){
+    document.getElementById('screener-notice').innerHTML=
+      '<div class="notice"><strong>Скринер недоступен.</strong> Открывай без VPN в торговые часы (пн–пт 10:00–18:40 МСК).</div>';
+    document.getElementById('vol-list').innerHTML='';
+    document.getElementById('growth-list').innerHTML='';
   }
 }
 
-function renderMd(t) {
+function renderMd(t){
   return t.replace(/### (.+)/g,'<h3>$1</h3>').replace(/## (.+)/g,'<h3>$1</h3>')
     .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
     .split(/\n\n+/).map(p=>p.startsWith('<')?p:'<p>'+p+'</p>').join('');
 }
 
-async function callClaude(prompt, maxTokens) {
-  const r = await fetch('https://api.anthropic.com/v1/messages',{
+async function callClaude(prompt,maxTokens){
+  const r=await fetch('https://api.anthropic.com/v1/messages',{
     method:'POST',headers:{'Content-Type':'application/json'},
     body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:maxTokens,messages:[{role:'user',content:prompt}]})
   });
-  const d = await r.json();
+  const d=await r.json();
   return d.content.map(b=>b.text||'').join('');
 }
 
-async function loadMentor() {
-  const box=document.getElementById('mentor-box'), btn=document.getElementById('btn-mentor');
-  btn.disabled=true;
-  box.innerHTML='<p style="color:var(--muted)">Готовлю урок...</p>';
+async function loadMentor(){
+  const box=document.getElementById('mentor-box'),btn=document.getElementById('btn-mentor');
+  btn.disabled=true; box.innerHTML='<p style="color:var(--muted)">Готовлю урок...</p>';
   const n=(parseInt(localStorage.getItem('ln')||'5')+1);
   localStorage.setItem('ln',n);
-  try {
-    const text = await callClaude(`Ментор для новичка-инвестора. Урок №${n}. 1-5:основы акций/биржи. 6-10:котировки/дивиденды/P/E. 11+:стратегии/риски. Урок №${n}: до 200 слов, простой язык, пример, ключевая мысль. Русский.`, 600);
+  try{
+    const text=await callClaude(`Ментор для новичка-инвестора. Урок №${n}. 1-5:основы акций/биржи. 6-10:котировки/дивиденды/P/E. 11+:стратегии/риски. Урок №${n}: до 200 слов, простой язык, пример, ключевая мысль. Русский.`,600);
     box.innerHTML=`<div class="lesson-num">УРОК ${n}</div>${renderMd(text)}`;
-  } catch(e){box.innerHTML='<p style="color:var(--red)">Ошибка — попробуй ещё раз.</p>';}
+  }catch(e){box.innerHTML='<p style="color:var(--red)">Ошибка — попробуй ещё раз.</p>';}
   btn.disabled=false;
 }
 
-async function loadAnalyst() {
-  const box=document.getElementById('analyst-box'), btn=document.getElementById('btn-analyst');
-  btn.disabled=true;
-  box.innerHTML='<p style="color:var(--muted)">Анализирую рынок...</p>';
+async function loadAnalyst(){
+  const box=document.getElementById('analyst-box'),btn=document.getElementById('btn-analyst');
+  btn.disabled=true; box.innerHTML='<p style="color:var(--muted)">Анализирую рынок...</p>';
   const today=new Date().toLocaleDateString('ru-RU',{day:'numeric',month:'long'});
-  try {
-    const text = await callClaude(`Инвестиционный аналитик. Портфель (${today}): X5 42акц.дивид., Лента LENT 53акц., Сбер SBER 74акц.дивид., Novabev BELU 12акц.дивид., TGLD золото 4618паёв. ~280тыс.руб. Долгосрочная дивидендная стратегия. По каждой позиции: ситуация+факторы+вывод (держать/наблюдать/риски). Честно, без выдуманных цен. До 300 слов. Русский.`, 700);
+  try{
+    const text=await callClaude(`Инвестиционный аналитик. Портфель (${today}): X5 42акц.дивид., Лента LENT 53акц., Сбер SBER 74акц.дивид., Novabev BELU 12акц.дивид., TGLD золото 4618паёв. ~280тыс.руб. Долгосрочная дивидендная стратегия. По каждой позиции: ситуация+факторы+вывод. Честно, без выдуманных цен. До 300 слов. Русский.`,700);
     box.innerHTML=`<div class="lesson-num">СВОДКА · ${today.toUpperCase()}</div>${renderMd(text)}`;
-  } catch(e){box.innerHTML='<p style="color:var(--red)">Ошибка — попробуй ещё раз.</p>';}
+  }catch(e){box.innerHTML='<p style="color:var(--red)">Ошибка — попробуй ещё раз.</p>';}
   btn.disabled=false;
 }
 
-async function loadAll() {
+async function loadAll(){
   document.getElementById('last-update').textContent='Обновлено в '+new Date().toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'});
-  await Promise.all([loadPortfolio(), loadScreener()]);
+  await Promise.all([loadPortfolio(),loadScreener()]);
 }
 
 loadAll();
