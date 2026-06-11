@@ -27,6 +27,6 @@ jobs:
       - name: Отправить письмо
         env:
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           LESSON_NUM: ${{ steps.lesson.outputs.num }}
         run: python send_email.py
