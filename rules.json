@@ -1,0 +1,536 @@
+{
+  "_meta": {
+    "version": "1.0",
+    "updated": "2026-06-11",
+    "description": "Движок правил для анализа портфеля. Используется сборщиком, письмами и Telegram ботами.",
+    "thresholds": {
+      "usd_change_alert": 2.0,
+      "stock_change_alert": 3.0,
+      "volume_growth_alert": 50.0,
+      "oil_change_alert": 3.0,
+      "cheap_stock_max_price": 500,
+      "horizon_months": 6
+    }
+  },
+  "portfolio": {
+    "total_value": 280000,
+    "currency": "RUB",
+    "positions": [
+      {
+        "ticker": "X5",
+        "name": "Корп. центр X5",
+        "qty": 42,
+        "sector": "retail",
+        "div": true,
+        "board": "TQBR"
+      },
+      {
+        "ticker": "LENT",
+        "name": "Лента",
+        "qty": 53,
+        "sector": "retail",
+        "div": false,
+        "board": "TQBR"
+      },
+      {
+        "ticker": "SBER",
+        "name": "Сбербанк",
+        "qty": 74,
+        "sector": "banking",
+        "div": true,
+        "board": "TQBR"
+      },
+      {
+        "ticker": "BELU",
+        "name": "Novabev Group",
+        "qty": 12,
+        "sector": "consumer",
+        "div": true,
+        "board": "TQBR"
+      },
+      {
+        "ticker": "TGLD",
+        "name": "Фонд Золото",
+        "qty": 4618,
+        "sector": "gold",
+        "div": false,
+        "board": "TQTF"
+      }
+    ]
+  },
+  "data_sources": {
+    "cbr_currency": "https://www.cbr.ru/scripts/XML_daily.asp",
+    "rss_feeds": [
+      {
+        "name": "РБК",
+        "url": "https://rssexport.rbc.ru/rbcnews/news/30/full.rss"
+      },
+      {
+        "name": "Интерфакс",
+        "url": "https://www.interfax.ru/rss.asp"
+      },
+      {
+        "name": "Ведомости",
+        "url": "https://www.vedomosti.ru/rss/news"
+      },
+      {
+        "name": "Коммерсант",
+        "url": "https://www.kommersant.ru/RSS/news.xml"
+      },
+      {
+        "name": "Финам",
+        "url": "https://www.finam.ru/analysis/newsitem/rss/"
+      },
+      {
+        "name": "БКС",
+        "url": "https://bcs-express.ru/rss"
+      },
+      {
+        "name": "Smart-Lab",
+        "url": "https://smart-lab.ru/blog/rss/"
+      }
+    ],
+    "moex_shares": "https://iss.moex.com/iss/engines/stock/markets/shares/boards/TQBR/securities.json",
+    "moex_etf": "https://iss.moex.com/iss/engines/stock/markets/shares/boards/TQTF/securities.json"
+  },
+  "rules": {
+    "currency": [
+      {
+        "id": "USD_RISE_STRONG",
+        "condition": "usd_change >= 2.0",
+        "signal": "danger",
+        "message": "Доллар вырос на {usd_change:.1f}% — существенное ослабление рубля",
+        "portfolio_impact": {
+          "TGLD": {
+            "signal": "positive",
+            "reason": "Золото в рублях дорожает при росте доллара"
+          },
+          "LENT": {
+            "signal": "negative",
+            "reason": "Лента зависит от импортных товаров — давление на маржу"
+          },
+          "SBER": {
+            "signal": "neutral",
+            "reason": "Банк частично защищён валютными активами"
+          },
+          "X5": {
+            "signal": "neutral",
+            "reason": "Розница — смешанный эффект, рост цен компенсирует"
+          },
+          "BELU": {
+            "signal": "negative",
+            "reason": "Импортный алкоголь дорожает — давление на ассортимент"
+          }
+        }
+      },
+      {
+        "id": "USD_FALL_STRONG",
+        "condition": "usd_change <= -2.0",
+        "signal": "info",
+        "message": "Доллар упал на {usd_change:.1f}% — укрепление рубля",
+        "portfolio_impact": {
+          "TGLD": {
+            "signal": "negative",
+            "reason": "Золото в рублях дешевеет при укреплении рубля"
+          },
+          "LENT": {
+            "signal": "positive",
+            "reason": "Импортные товары дешевеют — улучшение маржи"
+          },
+          "SBER": {
+            "signal": "positive",
+            "reason": "Укрепление рубля снижает инфляционное давление"
+          },
+          "X5": {
+            "signal": "positive",
+            "reason": "Снижение издержек на импорт"
+          },
+          "BELU": {
+            "signal": "positive",
+            "reason": "Импортный алкоголь дешевеет"
+          }
+        }
+      },
+      {
+        "id": "USD_STABLE",
+        "condition": "abs(usd_change) < 2.0",
+        "signal": "ok",
+        "message": "Курс доллара стабилен ({usd_rate:.1f} руб.)",
+        "portfolio_impact": {}
+      }
+    ],
+    "oil": [
+      {
+        "id": "OIL_FALL_STRONG",
+        "condition": "oil_change <= -3.0",
+        "signal": "danger",
+        "message": "Нефть Brent упала на {oil_change:.1f}% — давление на рубль и рынок",
+        "portfolio_impact": {
+          "SBER": {
+            "signal": "negative",
+            "reason": "Ослабление рубля через нефтяной канал"
+          },
+          "TGLD": {
+            "signal": "positive",
+            "reason": "Золото растёт как защитный актив при падении нефти"
+          },
+          "X5": {
+            "signal": "neutral",
+            "reason": "Ритейл относительно защищён от нефти"
+          },
+          "LENT": {
+            "signal": "neutral",
+            "reason": "Аналогично X5"
+          },
+          "BELU": {
+            "signal": "neutral",
+            "reason": "Слабая прямая зависимость от нефти"
+          }
+        }
+      },
+      {
+        "id": "OIL_RISE_STRONG",
+        "condition": "oil_change >= 3.0",
+        "signal": "positive",
+        "message": "Нефть Brent выросла на {oil_change:.1f}% — поддержка рублю",
+        "portfolio_impact": {
+          "SBER": {
+            "signal": "positive",
+            "reason": "Укрепление рубля позитивно для банка"
+          },
+          "TGLD": {
+            "signal": "negative",
+            "reason": "Золото теряет в рублях при укреплении рубля"
+          },
+          "X5": {
+            "signal": "positive",
+            "reason": "Рост доходов населения — позитив для ритейла"
+          },
+          "LENT": {
+            "signal": "positive",
+            "reason": "Аналогично X5"
+          },
+          "BELU": {
+            "signal": "positive",
+            "reason": "Рост потребительских расходов"
+          }
+        }
+      }
+    ],
+    "cbr_rate": [
+      {
+        "id": "CBR_RATE_HIGH",
+        "condition": "cbr_rate >= 18.0",
+        "signal": "warning",
+        "message": "Ключевая ставка ЦБ {cbr_rate:.1f}% — высокая конкуренция с депозитами",
+        "portfolio_impact": {
+          "SBER": {
+            "signal": "mixed",
+            "reason": "Доходы от кредитования растут, но акции под давлением депозитов"
+          },
+          "X5": {
+            "signal": "negative",
+            "reason": "Высокие ставки сдерживают потребительский спрос"
+          },
+          "LENT": {
+            "signal": "negative",
+            "reason": "Аналогично X5 — давление на спрос"
+          },
+          "BELU": {
+            "signal": "negative",
+            "reason": "Премиальный алкоголь страдает при снижении потребления"
+          },
+          "TGLD": {
+            "signal": "neutral",
+            "reason": "Золото не зависит от ставки ЦБ напрямую"
+          }
+        }
+      },
+      {
+        "id": "CBR_RATE_FALLING",
+        "condition": "cbr_rate_change < 0",
+        "signal": "positive",
+        "message": "ЦБ снизил ставку до {cbr_rate:.1f}% — позитив для акций",
+        "portfolio_impact": {
+          "SBER": {
+            "signal": "positive",
+            "reason": "Рост кредитования при снижении ставок"
+          },
+          "X5": {
+            "signal": "positive",
+            "reason": "Рост потребительского спроса"
+          },
+          "LENT": {
+            "signal": "positive",
+            "reason": "Аналогично X5"
+          },
+          "BELU": {
+            "signal": "positive",
+            "reason": "Рост потребительских расходов"
+          },
+          "TGLD": {
+            "signal": "neutral",
+            "reason": "Нейтрально"
+          }
+        }
+      }
+    ],
+    "news_keywords": {
+      "X5": {
+        "positive": [
+          "дивиденды x5",
+          "прибыль x5",
+          "рост выручки x5",
+          "пятёрочка открыла",
+          "чижик расширяет",
+          "x5 отчёт"
+        ],
+        "negative": [
+          "санкции x5",
+          "штраф x5",
+          "убыток x5",
+          "конкуренция x5",
+          "проверка x5"
+        ]
+      },
+      "LENT": {
+        "positive": [
+          "лента прибыль",
+          "лента открыла",
+          "лента дивиденды",
+          "лента рост"
+        ],
+        "negative": [
+          "лента убыток",
+          "лента долг",
+          "лента санкции",
+          "лента штраф"
+        ]
+      },
+      "SBER": {
+        "positive": [
+          "сбербанк прибыль",
+          "сбер дивиденды",
+          "греф заявил о росте",
+          "сбер рекорд"
+        ],
+        "negative": [
+          "санкции сбербанк",
+          "сбер убыток",
+          "блокировка сбер",
+          "ограничения сбербанк"
+        ]
+      },
+      "BELU": {
+        "positive": [
+          "белуга прибыль",
+          "novabev дивиденды",
+          "белуга рост продаж",
+          "belu отчёт"
+        ],
+        "negative": [
+          "акциз алкоголь повышение",
+          "ограничения алкоголь",
+          "белуга убыток"
+        ]
+      },
+      "TGLD": {
+        "positive": [
+          "золото растёт",
+          "gold price up",
+          "золото рекорд",
+          "спрос на золото"
+        ],
+        "negative": [
+          "золото падает",
+          "gold price down",
+          "продажи золота цб"
+        ]
+      }
+    },
+    "global_events": [
+      {
+        "id": "SANCTIONS_NEW",
+        "keywords": [
+          "санкции",
+          "sanctions",
+          "ограничения против"
+        ],
+        "signal": "danger",
+        "message": "Новые санкционные риски — общий негатив для российского рынка",
+        "portfolio_impact": {
+          "SBER": {
+            "signal": "high_risk",
+            "reason": "Банковский сектор наиболее уязвим к санкциям"
+          },
+          "X5": {
+            "signal": "low_risk",
+            "reason": "Ритейл менее уязвим — внутренний рынок"
+          },
+          "LENT": {
+            "signal": "low_risk",
+            "reason": "Аналогично X5"
+          },
+          "BELU": {
+            "signal": "low_risk",
+            "reason": "Внутренний рынок, но импортный алкоголь под риском"
+          },
+          "TGLD": {
+            "signal": "positive",
+            "reason": "Золото — защитный актив в условиях санкций"
+          }
+        }
+      },
+      {
+        "id": "PEACE_TALKS",
+        "keywords": [
+          "мирные переговоры",
+          "перемирие",
+          "мирное соглашение",
+          "прекращение огня"
+        ],
+        "signal": "positive",
+        "message": "Сигналы деэскалации — позитив для российского рынка",
+        "portfolio_impact": {
+          "SBER": {
+            "signal": "positive",
+            "reason": "Снятие санкционного давления — рост банковского сектора"
+          },
+          "X5": {
+            "signal": "positive",
+            "reason": "Рост потребительского доверия"
+          },
+          "LENT": {
+            "signal": "positive",
+            "reason": "Аналогично X5"
+          },
+          "BELU": {
+            "signal": "positive",
+            "reason": "Рост потребительских расходов"
+          },
+          "TGLD": {
+            "signal": "negative",
+            "reason": "Золото теряет как защитный актив при снижении рисков"
+          }
+        }
+      },
+      {
+        "id": "GEOPOLITICAL_ESCALATION",
+        "keywords": [
+          "эскалация",
+          "военные действия",
+          "конфликт обострился",
+          "война"
+        ],
+        "signal": "danger",
+        "message": "Геополитическая эскалация — защитная позиция по портфелю",
+        "portfolio_impact": {
+          "TGLD": {
+            "signal": "positive",
+            "reason": "Золото растёт в условиях неопределённости"
+          },
+          "SBER": {
+            "signal": "high_risk",
+            "reason": "Банковский сектор под давлением"
+          },
+          "X5": {
+            "signal": "neutral",
+            "reason": "Ритейл — защитный сектор"
+          },
+          "LENT": {
+            "signal": "neutral",
+            "reason": "Аналогично X5"
+          },
+          "BELU": {
+            "signal": "neutral",
+            "reason": "Защитный потребительский сектор"
+          }
+        }
+      }
+    ],
+    "screener": {
+      "cheap_growth": {
+        "max_price": 500,
+        "min_daily_change_pct": 0.5,
+        "min_volume_rub": 5000000,
+        "volume_growth_pct": 20,
+        "description": "Акции до 500 руб. с ростом цены и объёма — горизонт 3-6 месяцев"
+      },
+      "top_volume": {
+        "min_turnover_rub": 100000000,
+        "top_n": 10,
+        "description": "Топ акции по обороту — индикатор интереса рынка"
+      },
+      "ipo_watch": {
+        "days_since_listing": 7,
+        "description": "Новые размещения за последнюю неделю"
+      }
+    },
+    "advisor": {
+      "buy_signal": {
+        "conditions": [
+          "Цена акции снизилась > 10% без фундаментальных причин",
+          "Объём торгов вырос > 50% при стабильной или растущей цене",
+          "Позитивные новости по компании + стабильный рынок"
+        ]
+      },
+      "watch_signal": {
+        "conditions": [
+          "Акция в боковике более 2 недель",
+          "Объём торгов снижается",
+          "Нейтральные новости"
+        ]
+      },
+      "risk_signal": {
+        "conditions": [
+          "Санкционные новости по компании или сектору",
+          "Падение цены > 5% за день",
+          "Негативная отчётность",
+          "Рост доллара > 3% (давление на импортёров)"
+        ]
+      }
+    }
+  },
+  "bot_config": {
+    "mentor_bot": {
+      "commands": [
+        "/start",
+        "/lesson",
+        "/progress"
+      ],
+      "max_messages_per_day": 1,
+      "log_path": "logs/mentor/"
+    },
+    "advisor_bot": {
+      "commands": [
+        "/start",
+        "/advice",
+        "/portfolio",
+        "/screener",
+        "/top"
+      ],
+      "max_messages_per_day": 3,
+      "log_path": "logs/advisor/"
+    },
+    "rate_limit_message": "Сегодняшний отчёт уже был отправлен. Следующий — завтра утром. Посмотреть лог: github.com/podlesnykhdn/my_prodject_invest"
+  },
+  "logging": {
+    "paths": {
+      "mentor": "logs/mentor/",
+      "advisor": "logs/advisor/",
+      "collector": "logs/collector/"
+    },
+    "format": {
+      "date": "YYYY-MM-DD",
+      "fields": [
+        "timestamp",
+        "role",
+        "trigger",
+        "data",
+        "rules_fired",
+        "message_sent"
+      ]
+    },
+    "retention_days": 90
+  }
+}
