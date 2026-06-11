@@ -1,6 +1,6 @@
 {
   "_meta": {
-    "version": "1.0",
+    "version": "2.0",
     "updated": "2026-06-11",
     "description": "Движок правил для анализа портфеля. Используется сборщиком, письмами и Telegram ботами.",
     "thresholds": {
@@ -10,7 +10,19 @@
       "oil_change_alert": 3.0,
       "cheap_stock_max_price": 500,
       "horizon_months": 6
-    }
+    },
+    "sections": [
+      "currency",
+      "oil",
+      "cbr_rate",
+      "macro_indicators (imoex, inflation_cpi, cny, fed_rate)",
+      "sector_rules (retail, banking, gold, consumer)",
+      "seasonal_factors (dividends, new_year, reporting, summer)",
+      "news_keywords",
+      "global_events",
+      "screener",
+      "advisor"
+    ]
   },
   "portfolio": {
     "total_value": 280000,
@@ -487,6 +499,535 @@
           "Падение цены > 5% за день",
           "Негативная отчётность",
           "Рост доллара > 3% (давление на импортёров)"
+        ]
+      }
+    },
+    "macro_indicators": {
+      "imoex": [
+        {
+          "id": "IMOEX_FALL_STRONG",
+          "condition": "imoex_change <= -2.0",
+          "signal": "danger",
+          "message": "Индекс МосБиржи упал на {imoex_change:.1f}% — широкий рынок под давлением",
+          "portfolio_impact": {
+            "SBER": {
+              "signal": "negative",
+              "reason": "Голубые фишки падают сильнее рынка при просадках"
+            },
+            "X5": {
+              "signal": "negative",
+              "reason": "Общая распродажа затрагивает весь рынок"
+            },
+            "LENT": {
+              "signal": "negative",
+              "reason": "Аналогично — рыночная коррекция"
+            },
+            "BELU": {
+              "signal": "negative",
+              "reason": "Малоликвидные бумаги падают острее"
+            },
+            "TGLD": {
+              "signal": "positive",
+              "reason": "Золото — защитный актив при падении рынка"
+            }
+          }
+        },
+        {
+          "id": "IMOEX_RISE_STRONG",
+          "condition": "imoex_change >= 2.0",
+          "signal": "positive",
+          "message": "Индекс МосБиржи вырос на {imoex_change:.1f}% — широкий рост рынка",
+          "portfolio_impact": {
+            "SBER": {
+              "signal": "positive",
+              "reason": "Банки лидируют при росте рынка"
+            },
+            "X5": {
+              "signal": "positive",
+              "reason": "Ритейл растёт вместе с рынком"
+            },
+            "LENT": {
+              "signal": "positive",
+              "reason": "Аналогично X5"
+            },
+            "BELU": {
+              "signal": "positive",
+              "reason": "Потребительский сектор растёт"
+            },
+            "TGLD": {
+              "signal": "neutral",
+              "reason": "Золото отстаёт при росте рисковых активов"
+            }
+          }
+        },
+        {
+          "id": "IMOEX_SIDEWAYS",
+          "condition": "abs(imoex_change) < 0.5",
+          "signal": "neutral",
+          "message": "Индекс МосБиржи в боковике ({imoex_change:.1f}%) — без чётких сигналов",
+          "portfolio_impact": {}
+        }
+      ],
+      "inflation_cpi": [
+        {
+          "id": "INFLATION_HIGH",
+          "condition": "cpi_annual >= 8.0",
+          "signal": "warning",
+          "message": "Инфляция {cpi_annual:.1f}% годовых — высокое инфляционное давление",
+          "portfolio_impact": {
+            "X5": {
+              "signal": "mixed",
+              "reason": "Рост цен увеличивает выручку, но давит на покупательский спрос"
+            },
+            "LENT": {
+              "signal": "mixed",
+              "reason": "Аналогично X5 — двойственный эффект"
+            },
+            "SBER": {
+              "signal": "negative",
+              "reason": "Высокая инфляция → высокая ставка ЦБ → давление на банк"
+            },
+            "BELU": {
+              "signal": "negative",
+              "reason": "Снижение реальных доходов → меньше трат на премиум"
+            },
+            "TGLD": {
+              "signal": "positive",
+              "reason": "Золото — классическая защита от инфляции"
+            }
+          }
+        },
+        {
+          "id": "INFLATION_FALLING",
+          "condition": "cpi_monthly_change < -0.3",
+          "signal": "positive",
+          "message": "Инфляция замедляется — предпосылки для снижения ставки ЦБ",
+          "portfolio_impact": {
+            "SBER": {
+              "signal": "positive",
+              "reason": "Снижение ставки ЦБ позитивно для банков"
+            },
+            "X5": {
+              "signal": "positive",
+              "reason": "Стабилизация потребительского спроса"
+            },
+            "LENT": {
+              "signal": "positive",
+              "reason": "Аналогично X5"
+            },
+            "BELU": {
+              "signal": "positive",
+              "reason": "Рост реальных доходов → рост потребления"
+            },
+            "TGLD": {
+              "signal": "neutral",
+              "reason": "Снижение инфляции снижает привлекательность золота"
+            }
+          }
+        },
+        {
+          "id": "INFLATION_NORMAL",
+          "condition": "cpi_annual < 5.0",
+          "signal": "ok",
+          "message": "Инфляция в норме ({cpi_annual:.1f}%) — стабильная макросреда",
+          "portfolio_impact": {}
+        }
+      ],
+      "cny": [
+        {
+          "id": "CNY_RISE",
+          "condition": "cny_change >= 2.0",
+          "signal": "info",
+          "message": "Юань вырос на {cny_change:.1f}% — ослабление рубля к CNY",
+          "portfolio_impact": {
+            "LENT": {
+              "signal": "negative",
+              "reason": "Китайский импорт дорожает — давление на себестоимость"
+            },
+            "BELU": {
+              "signal": "negative",
+              "reason": "Импортные комплектующие дорожают"
+            },
+            "TGLD": {
+              "signal": "positive",
+              "reason": "Общее ослабление рубля поддерживает рублёвое золото"
+            },
+            "X5": {
+              "signal": "neutral",
+              "reason": "Частичная зависимость от китайского импорта"
+            },
+            "SBER": {
+              "signal": "neutral",
+              "reason": "Банк частично хеджирует валютные риски"
+            }
+          }
+        },
+        {
+          "id": "CNY_FALL",
+          "condition": "cny_change <= -2.0",
+          "signal": "info",
+          "message": "Юань упал на {cny_change:.1f}% — укрепление рубля к CNY",
+          "portfolio_impact": {
+            "LENT": {
+              "signal": "positive",
+              "reason": "Китайский импорт дешевеет"
+            },
+            "BELU": {
+              "signal": "positive",
+              "reason": "Снижение стоимости импортных компонентов"
+            },
+            "TGLD": {
+              "signal": "negative",
+              "reason": "Укрепление рубля снижает рублёвую цену золота"
+            },
+            "X5": {
+              "signal": "positive",
+              "reason": "Снижение себестоимости импортных товаров"
+            },
+            "SBER": {
+              "signal": "neutral",
+              "reason": "Нейтрально для банковского сектора"
+            }
+          }
+        }
+      ],
+      "fed_rate": [
+        {
+          "id": "FED_RATE_RISE",
+          "condition": "fed_rate_change > 0",
+          "signal": "warning",
+          "message": "ФРС США повысила ставку до {fed_rate:.2f}% — давление на золото",
+          "portfolio_impact": {
+            "TGLD": {
+              "signal": "negative",
+              "reason": "Рост ставки ФРС укрепляет доллар → золото в долларах дешевеет"
+            },
+            "SBER": {
+              "signal": "neutral",
+              "reason": "Косвенное влияние через глобальные рынки"
+            },
+            "X5": {
+              "signal": "neutral",
+              "reason": "Слабое влияние на российский ритейл"
+            },
+            "LENT": {
+              "signal": "neutral",
+              "reason": "Аналогично X5"
+            },
+            "BELU": {
+              "signal": "neutral",
+              "reason": "Минимальное влияние"
+            }
+          }
+        },
+        {
+          "id": "FED_RATE_FALL",
+          "condition": "fed_rate_change < 0",
+          "signal": "positive",
+          "message": "ФРС США снизила ставку до {fed_rate:.2f}% — поддержка золоту",
+          "portfolio_impact": {
+            "TGLD": {
+              "signal": "positive",
+              "reason": "Снижение ставки ФРС ослабляет доллар → золото дорожает"
+            },
+            "SBER": {
+              "signal": "neutral",
+              "reason": "Косвенный позитив через глобальные потоки"
+            },
+            "X5": {
+              "signal": "neutral",
+              "reason": "Минимальное влияние"
+            },
+            "LENT": {
+              "signal": "neutral",
+              "reason": "Минимальное влияние"
+            },
+            "BELU": {
+              "signal": "neutral",
+              "reason": "Минимальное влияние"
+            }
+          }
+        }
+      ]
+    },
+    "sector_rules": {
+      "retail": {
+        "tickers": [
+          "X5",
+          "LENT"
+        ],
+        "rules": [
+          {
+            "id": "FOOD_INFLATION_HIGH",
+            "condition": "food_cpi_annual >= 10.0",
+            "signal": "mixed",
+            "message": "Инфляция продуктов питания {food_cpi_annual:.1f}% — двойственный эффект для ритейла",
+            "details": "Рост цен увеличивает номинальную выручку X5 и Ленты. Но реальный трафик может снижаться — покупатели экономят. Следить за динамикой LFL (like-for-like продаж)."
+          },
+          {
+            "id": "CONSUMER_CONFIDENCE_LOW",
+            "condition": "news_contains(['потребительское доверие снизилось', 'реальные доходы падают', 'россияне экономят'])",
+            "signal": "negative",
+            "message": "Снижение потребительского доверия — давление на ритейл",
+            "details": "X5 и Лента теряют трафик в среднем и премиум сегментах. Дискаунтеры (Чижик) могут выиграть."
+          },
+          {
+            "id": "RETAIL_EXPANSION",
+            "condition": "news_contains(['x5 открыла', 'лента открыла', 'новые магазины', 'расширение сети'])",
+            "signal": "positive",
+            "message": "Расширение торговых сетей — органический рост выручки",
+            "details": "Новые магазины увеличивают выручку через 3-6 месяцев после открытия."
+          }
+        ]
+      },
+      "banking": {
+        "tickers": [
+          "SBER"
+        ],
+        "rules": [
+          {
+            "id": "CREDIT_QUALITY_RISK",
+            "condition": "news_contains(['просрочка кредитов', 'рост npL', 'плохие долги', 'кредитный риск'])",
+            "signal": "danger",
+            "message": "Риски кредитного качества — негатив для Сбербанка",
+            "details": "Рост просрочки снижает прибыль банка и требует увеличения резервов. Особо опасно при высокой ставке ЦБ."
+          },
+          {
+            "id": "CAPITAL_ADEQUACY",
+            "condition": "news_contains(['достаточность капитала', 'норматив Н1', 'базель', 'капитал банка'])",
+            "signal": "warning",
+            "message": "Вопросы достаточности капитала — следить за нормативами ЦБ",
+            "details": "Сбер обязан соблюдать нормативы ЦБ по достаточности капитала. Нарушение ведёт к ограничениям на дивиденды."
+          },
+          {
+            "id": "MORTGAGE_BOOM",
+            "condition": "news_contains(['ипотека рост', 'льготная ипотека', 'спрос на ипотеку'])",
+            "signal": "positive",
+            "message": "Рост ипотечного рынка — прямой позитив для Сбербанка",
+            "details": "Сбер — крупнейший ипотечный кредитор в России. Рост выдач увеличивает процентный доход."
+          },
+          {
+            "id": "DIVIDEND_RECORD",
+            "condition": "news_contains(['сбер дивиденды', 'сбербанк рекомендовал', 'дата отсечки сбер'])",
+            "signal": "positive",
+            "message": "Дивидендные новости по Сбербанку — следи за датой отсечки",
+            "details": "74 акции × дивиденд на акцию = твой доход. Покупать до отсечки, продавать после гэпа — классическая стратегия."
+          }
+        ]
+      },
+      "gold": {
+        "tickers": [
+          "TGLD"
+        ],
+        "rules": [
+          {
+            "id": "GOLD_DEMAND_CENTRAL_BANKS",
+            "condition": "news_contains(['центробанки покупают золото', 'резервы в золоте', 'цб закупил золото'])",
+            "signal": "positive",
+            "message": "Центробанки наращивают золотые резервы — долгосрочный позитив",
+            "details": "Массовые закупки золота центробанками создают устойчивый спрос и поддерживают цену."
+          },
+          {
+            "id": "GOLD_INFLATION_HEDGE",
+            "condition": "cpi_annual >= 7.0 and fed_rate_change <= 0",
+            "signal": "positive",
+            "message": "Высокая инфляция + мягкая политика ФРС — идеальная среда для золота",
+            "details": "TGLD в твоём портфеле выполняет роль страховки. При таких условиях золото исторически показывает лучшие результаты."
+          },
+          {
+            "id": "GOLD_RISK_OFF",
+            "condition": "imoex_change <= -3.0 or news_contains(['кризис', 'паника', 'обвал рынков'])",
+            "signal": "positive",
+            "message": "Risk-off настроения — золото растёт как защитный актив",
+            "details": "В периоды рыночной паники инвесторы уходят в золото. Твои 4618 паёв TGLD — это буфер портфеля."
+          }
+        ]
+      },
+      "consumer": {
+        "tickers": [
+          "BELU"
+        ],
+        "rules": [
+          {
+            "id": "EXCISE_TAX_RISE",
+            "condition": "news_contains(['акциз алкоголь', 'повышение акциза', 'налог на алкоголь'])",
+            "signal": "negative",
+            "message": "Рост акцизов на алкоголь — прямое давление на Novabev",
+            "details": "Akцизы повышают себестоимость продукции. Novabev может переложить часть на покупателя, но это снижает объём продаж."
+          },
+          {
+            "id": "ALCOHOL_RESTRICTION",
+            "condition": "news_contains(['ограничение продажи алкоголя', 'запрет алкоголь', 'антиалкогольная'])",
+            "signal": "danger",
+            "message": "Ограничения продажи алкоголя — существенный риск для Novabev",
+            "details": "Законодательные ограничения напрямую сокращают рынок сбыта."
+          },
+          {
+            "id": "PREMIUM_CONSUMER_GROWTH",
+            "condition": "news_contains(['рост реальных доходов', 'потребление премиум', 'средний класс растёт'])",
+            "signal": "positive",
+            "message": "Рост реальных доходов — позитив для премиального сегмента Novabev",
+            "details": "Белуга, Архангельская и другие премиальные бренды Novabev выигрывают при росте доходов."
+          }
+        ]
+      }
+    },
+    "seasonal_factors": {
+      "dividend_season": {
+        "period": {
+          "months": [
+            5,
+            6,
+            7
+          ]
+        },
+        "description": "Дивидендный сезон (май-июль) — пик выплат по российским акциям",
+        "tickers_affected": [
+          "X5",
+          "SBER",
+          "BELU"
+        ],
+        "rules": [
+          {
+            "id": "DIV_SEASON_ACTIVE",
+            "condition": "current_month in [5, 6, 7]",
+            "signal": "info",
+            "message": "Дивидендный сезон — следи за датами отсечек по X5, Сберу и Novabev",
+            "advice": "Купить до отсечки — получить дивиденды. Акция обычно падает на размер дивиденда после отсечки (дивидендный гэп). Долгосрочно — держать и реинвестировать."
+          },
+          {
+            "id": "PRE_DIVIDEND_RALLY",
+            "condition": "days_to_record_date <= 14 and days_to_record_date > 0",
+            "signal": "positive",
+            "message": "До даты отсечки {days_to_record_date} дней — возможен преддивидендный рост",
+            "advice": "Инвесторы покупают акцию ради дивидендов — создаётся спрос. После отсечки акция падает на размер дивиденда."
+          }
+        ],
+        "expected_dividends_2026": {
+          "X5": {
+            "amount_per_share": "уточнить",
+            "record_date": "уточнить"
+          },
+          "SBER": {
+            "amount_per_share": "~33 руб.",
+            "record_date": "июль 2026"
+          },
+          "BELU": {
+            "amount_per_share": "уточнить",
+            "record_date": "уточнить"
+          }
+        }
+      },
+      "new_year_sales": {
+        "period": {
+          "months": [
+            11,
+            12,
+            1
+          ]
+        },
+        "description": "Новогодний сезон — рост продаж для ритейла и алкоголя",
+        "tickers_affected": [
+          "BELU",
+          "LENT",
+          "X5"
+        ],
+        "rules": [
+          {
+            "id": "NEW_YEAR_SEASON",
+            "condition": "current_month in [11, 12, 1]",
+            "signal": "positive",
+            "message": "Новогодний сезон — традиционный пик продаж для Novabev и ритейла",
+            "advice": "Novabev исторически показывает рост выручки в Q4. Лента и X5 увеличивают трафик. Позитивный период для всех потребительских позиций портфеля."
+          }
+        ]
+      },
+      "reporting_periods": {
+        "description": "Квартальные отчёты компаний — движущие события для акций",
+        "schedule": [
+          {
+            "period": "Q1",
+            "months": [
+              4,
+              5
+            ],
+            "tickers": [
+              "X5",
+              "LENT",
+              "SBER",
+              "BELU"
+            ],
+            "note": "Отчёт за январь-март"
+          },
+          {
+            "period": "Q2",
+            "months": [
+              7,
+              8
+            ],
+            "tickers": [
+              "X5",
+              "LENT",
+              "SBER",
+              "BELU"
+            ],
+            "note": "Отчёт за апрель-июнь"
+          },
+          {
+            "period": "Q3",
+            "months": [
+              10,
+              11
+            ],
+            "tickers": [
+              "X5",
+              "LENT",
+              "SBER",
+              "BELU"
+            ],
+            "note": "Отчёт за июль-сентябрь"
+          },
+          {
+            "period": "Q4",
+            "months": [
+              1,
+              2
+            ],
+            "tickers": [
+              "X5",
+              "LENT",
+              "SBER",
+              "BELU"
+            ],
+            "note": "Годовой отчёт"
+          }
+        ],
+        "rules": [
+          {
+            "id": "REPORTING_MONTH",
+            "condition": "current_month in reporting_months",
+            "signal": "info",
+            "message": "Отчётный период — ожидай повышенной волатильности по акциям портфеля",
+            "advice": "Хорошая отчётность → рост акции. Плохая → падение. Долгосрочному инвестору не стоит реагировать на один квартал — смотри на тренд за год."
+          }
+        ]
+      },
+      "summer_low_volume": {
+        "period": {
+          "months": [
+            7,
+            8
+          ]
+        },
+        "description": "Летнее затишье — низкие объёмы торгов в июле-августе",
+        "rules": [
+          {
+            "id": "SUMMER_LOW_LIQUIDITY",
+            "condition": "current_month in [7, 8]",
+            "signal": "info",
+            "message": "Летний период — объёмы торгов снижаются, волатильность выше",
+            "advice": "В период низкой ликвидности даже небольшие сделки могут сильно двигать цену. Данные по объёмам скринера менее показательны."
+          }
         ]
       }
     }
