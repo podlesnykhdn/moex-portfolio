@@ -98,6 +98,95 @@ def fmt_vol(v):
     if v >= 1e3: return f"{v/1e3:.0f}K ₽"
     return f"{v:.0f} ₽"
 
+
+def build_conclusion(data, fired_rules, portfolio_signals):
+    """Формирует чёткий итоговый вывод для инвестора."""
+    if not data:
+        return "\n─ ─ ─\n❓ <b>Итог:</b> Нет данных для анализа."
+
+    # Считаем сигналы по портфелю
+    danger_count  = 0
+    positive_count = 0
+    risk_tickers  = []
+    opportunity_tickers = []
+
+    for ticker, signals in portfolio_signals.items():
+        for s in signals:
+            sig = s.get("signal", "")
+            if sig in ("negative", "high_risk", "danger"):
+                danger_count += 1
+                risk_tickers.append(ticker)
+            elif sig in ("positive",):
+                positive_count += 1
+                opportunity_tickers.append(ticker)
+
+    # Проверяем скринер на акции с оценкой A
+    screener = data.get("screener", {})
+    cheap = screener.get("cheap_growth", [])
+    grade_a = [s for s in cheap if s.get("score", 0) >= 75]
+    grade_b = [s for s in cheap if 50 <= s.get("score", 0) < 75]
+
+    # Проверяем критические правила
+    critical_rules = [r for r in fired_rules if r.get("signal") in ("danger",)]
+    warning_rules  = [r for r in fired_rules if r.get("signal") in ("warning",)]
+
+    # Определяем итоговый вывод
+    lines = ["\n─ ─ ─\n"]
+
+    # СЦЕНАРИЙ 1: Есть критические риски по портфелю
+    if critical_rules or danger_count >= 2:
+        lines.append("⚠️ <b>ИТОГ: Есть риск — требует внимания</b>")
+        lines.append("")
+        if critical_rules:
+            lines.append(f"Сработало критических правил: {len(critical_rules)}")
+        if risk_tickers:
+            unique_risk = list(dict.fromkeys(risk_tickers))
+            lines.append(f"Под давлением: {', '.join(unique_risk)}")
+        lines.append("")
+        lines.append("<b>Что делать:</b> Не паниковать. Долгосрочная стратегия выдерживает краткосрочные потрясения. Наблюдай за развитием событий.")
+
+    # СЦЕНАРИЙ 2: Есть акция с оценкой A в скринере
+    elif grade_a:
+        s = grade_a[0]
+        lines.append("💡 <b>ИТОГ: Есть возможность — рассмотри докупку</b>")
+        lines.append("")
+        lines.append(f"Акция с высоким потенциалом: <b>{s['ticker']}</b> ({s.get('name','')[:20]})")
+        lines.append(f"Цена: {fmt_price(s['price'])}  Score: {s['score']}/100")
+        lines.append(f"Объём: {fmt_vol(s['volume'])}")
+        lines.append("")
+        lines.append("<b>Что делать:</b> Изучи компанию подробнее. Если бизнес понятен и новостей негативных нет — можно рассмотреть небольшую позицию.")
+
+    # СЦЕНАРИЙ 3: Есть предупреждения или акции с оценкой B
+    elif warning_rules or danger_count == 1 or grade_b:
+        lines.append("👀 <b>ИТОГ: Есть сигнал — наблюдай</b>")
+        lines.append("")
+        if warning_rules:
+            lines.append(f"Предупреждений: {len(warning_rules)}")
+        if danger_count == 1 and risk_tickers:
+            lines.append(f"Под лёгким давлением: {risk_tickers[0]}")
+        if grade_b:
+            s = grade_b[0]
+            lines.append(f"Интересная акция на радаре: <b>{s['ticker']}</b> — {fmt_price(s['price'])}  Score: {s['score']}/100")
+        lines.append("")
+        lines.append("<b>Что делать:</b> Портфель в порядке, но следи за развитием. Пока ничего менять не нужно.")
+
+    # СЦЕНАРИЙ 4: Всё спокойно
+    else:
+        lines.append("🟢 <b>ИТОГ: Всё спокойно — держи портфель</b>")
+        lines.append("")
+
+        # Дивидендный сезон
+        import datetime
+        month = datetime.datetime.now().month
+        if month in [5, 6, 7]:
+            lines.append("📅 Дивидендный сезон: жди выплат от X5, Сбера и Novabev.")
+            lines.append("")
+
+        lines.append("<b>Что делать:</b> Стратегия работает. Продавать ничего не нужно. Если есть свободные деньги — можно докупить дивидендные позиции на просадках.")
+
+    return "\n".join(lines)
+
+
 def build_morning_report(data):
     if not data:
         return (
@@ -225,6 +314,11 @@ def build_morning_report(data):
     if WEEKDAY == 4:
         lines.append(f"\n─ ─ ─\n📅 <b>Пятница — итог недели</b>")
         lines.append("Полная недельная статистика в логах репозитория.")
+
+    # Итоговый вывод
+    fired  = data.get("rules_fired", [])
+    psigs  = data.get("portfolio_signals", {})
+    lines.append(build_conclusion(data, fired, psigs))
 
     # Ссылка на дашборд
     lines.append(
