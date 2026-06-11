@@ -76,40 +76,102 @@ def collect_currency():
                     )
     except Exception as e:
         print(f"  [ERROR] currency: {e}")
+        # Пробуем кэш
+        last_log = _load_last_log("collector")
+        if last_log and last_log.get("currency", {}).get("usd"):
+            cached = last_log["currency"]
+            cached_date = last_log.get("meta", {}).get("date", "неизвестно")
+            result.update({
+                "usd": cached.get("usd"),
+                "eur": cached.get("eur"),
+                "cny": cached.get("cny"),
+                "source": f"КЭШ от {cached_date} ⚠️",
+                "is_cached": True,
+                "cache_date": cached_date,
+            })
+            print(f"  ⚠️  ВНИМАНИЕ: Курсы валют из кэша ({cached_date})!")
+            print(f"  ⚠️  ЦБ РФ недоступен — данные могут быть устаревшими!")
+        else:
+            result["source"] = "недоступен ❌"
     return result
 
 # ─── 2. НЕФТЬ BRENT (RSS) ─────────────────────────────────────────────────────
 
 def collect_oil():
-    print("[2/6] Нефть Brent...")
-    result = {"price": None, "change": None, "change_pct": None}
-    urls = [
-        "https://www.oilprice.com/rss/main",
-        "https://ru.investing.com/rss/news_25.rss",
-    ]
-    for url in urls:
-        try:
-            data = safe_fetch(url, timeout=6)
-            if not data:
-                continue
+    print("[2/7] Нефть Brent...")
+    result = {"price": None, "change": None, "change_pct": None, "source": None}
+    import re
+
+    # Источник 1: oilprice.com RSS
+    try:
+        data = safe_fetch("https://www.oilprice.com/rss/main", timeout=6)
+        if data:
+            root = ET.fromstring(data)
+            for item in root.findall(".//item"):
+                title = (item.find("title").text or "").lower()
+                if "brent" in title:
+                    prices = re.findall(r'\$?([\d.]+)', title)
+                    if prices:
+                        result["price"] = float(prices[0])
+                        result["source"] = "oilprice.com"
+                        print(f"  Brent ${result['price']} (источник: oilprice.com)")
+                        return result
+    except Exception as e:
+        print(f"  [WARN] oilprice.com: {e}")
+
+    # Источник 2: investing.com RSS
+    try:
+        data = safe_fetch("https://ru.investing.com/rss/news_25.rss", timeout=6)
+        if data:
             root = ET.fromstring(data)
             for item in root.findall(".//item"):
                 title = (item.find("title").text or "").lower()
                 if "brent" in title or "брент" in title:
-                    import re
-                    prices = re.findall(r'\$?([\d.]+)', title)
+                    prices = re.findall(r'[\d.]+', title)
                     if prices:
                         result["price"] = float(prices[0])
-                        print(f"  Brent ~${result['price']}")
+                        result["source"] = "investing.com"
+                        print(f"  Brent ${result['price']} (источник: investing.com)")
                         return result
-        except Exception as e:
-            print(f"  [WARN] oil rss {url[:40]}: {e}")
+    except Exception as e:
+        print(f"  [WARN] investing.com: {e}")
 
-    # Fallback: статичная цена из последнего лога если есть
+    # Источник 3: MOEX фьючерс BR- (самый надёжный резерв)
+    try:
+        url = ("https://iss.moex.com/iss/engines/futures/markets/forts/"
+               "securities/BRU5.json?iss.meta=off&iss.only=marketdata")
+        data = safe_fetch(url, timeout=8)
+        if data:
+            d = json.loads(data)
+            cols = d["marketdata"]["columns"]
+            rows = d["marketdata"]["data"]
+            if rows:
+                r = dict(zip(cols, rows[0]))
+                price = r.get("LAST") or r.get("SETTLEPRICE") or 0
+                if price:
+                    result["price"] = round(float(price), 2)
+                    result["source"] = "MOEX фьючерс BR-"
+                    print(f"  Brent ${result['price']} (источник: MOEX фьючерс BR-)")
+                    return result
+    except Exception as e:
+        print(f"  [WARN] MOEX BR-: {e}")
+
+    # Источник 4: кэш из последнего лога — с явным предупреждением
     last_log = _load_last_log("collector")
     if last_log and last_log.get("oil", {}).get("price"):
-        result["price"] = last_log["oil"]["price"]
-        print(f"  Brent из кэша: ${result['price']}")
+        cached_price = last_log["oil"]["price"]
+        cached_date  = last_log.get("meta", {}).get("date", "неизвестно")
+        result["price"]  = cached_price
+        result["source"] = f"КЭШ от {cached_date} ⚠️"
+        result["is_cached"] = True
+        result["cache_date"] = cached_date
+        print(f"  ⚠️  ВНИМАНИЕ: Brent из кэша ({cached_date}): ${cached_price}")
+        print(f"  ⚠️  Все 3 источника недоступны — данные могут быть устаревшими!")
+    else:
+        result["source"] = "недоступен ❌"
+        result["is_cached"] = False
+        print(f"  ❌ Цена нефти недоступна — все источники не отвечают")
+
     return result
 
 # ─── 3. КОТИРОВКИ MOEX ────────────────────────────────────────────────────────
