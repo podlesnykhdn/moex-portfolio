@@ -10,7 +10,7 @@ TO_EMAIL = "podlesnykhdn@gmail.com"
 def ask_groq(prompt):
     payload = json.dumps({
         "model": "llama-3.3-70b-versatile",
-        "max_tokens": 1000,
+        "max_tokens": 1024,
         "messages": [{"role": "user", "content": prompt}]
     }).encode("utf-8")
     req = urllib.request.Request(
@@ -40,7 +40,7 @@ mentor_prompt = f"""Ты — ментор по инвестициям для а�
 - Простой язык, без жаргона (или с объяснением)
 - Конкретные примеры
 - В конце — одна ключевая мысль
-- Формат: заголовок, текст, ключевая мысль
+- Формат: заголовок урока, текст, ключевая мысль
 
 Только русский язык."""
 
@@ -53,7 +53,7 @@ analyst_prompt = f"""Ты — инвестиционный аналитик. Д�
 - BELU (Novabev Group) — 12 акций, дивидендные
 - TGLD (Фонд Золото ТБанк) — 4618 паёв, ETF на золото
 
-Стоимость: ~280 000 ₽. Стратегия: дивидендная, долгосрочная.
+Стоимость: ~280 000 руб. Стратегия: дивидендная, долгосрочная.
 
 По каждой позиции кратко:
 1. Общая ситуация с компанией/активом
@@ -64,9 +64,11 @@ analyst_prompt = f"""Ты — инвестиционный аналитик. Д�
 
 print("Запрашиваю урок у Ментора...")
 mentor_text = ask_groq(mentor_prompt)
+print("Урок получен!")
 
 print("Запрашиваю сводку у Аналитика...")
 analyst_text = ask_groq(analyst_prompt)
+print("Сводка получена!")
 
 def to_html(text):
     lines = text.strip().split("\n")
@@ -74,9 +76,10 @@ def to_html(text):
     for line in lines:
         line = line.strip()
         if not line:
+            result.append("<br>")
             continue
         if line.startswith("### ") or line.startswith("## "):
-            result.append(f'<h3 style="color:#1d4ed8;font-size:15px;margin:16px 0 6px;">{line.lstrip("#").strip()}</h3>')
+            result.append(f'<h3 style="color:#1d4ed8;font-size:15px;margin:14px 0 6px;">{line.lstrip("#").strip()}</h3>')
         elif line.startswith("**") and line.endswith("**"):
             result.append(f'<p style="margin:6px 0;"><strong>{line.strip("*")}</strong></p>')
         else:
@@ -90,21 +93,21 @@ html_email = f"""<!DOCTYPE html>
 <body style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#f9fafb;padding:20px;">
 
   <div style="background:#1e3a5f;padding:20px 24px;border-radius:10px 10px 0 0;">
-    <h1 style="color:#fff;margin:0;font-size:18px;">📈 my_prodject_invest</h1>
+    <h1 style="color:#fff;margin:0;font-size:18px;">my_prodject_invest</h1>
     <p style="color:#93c5fd;margin:4px 0 0;font-size:13px;">{today} · Ежедневная рассылка</p>
   </div>
 
   <div style="background:#fff;padding:24px;border-left:1px solid #e5e7eb;border-right:1px solid #e5e7eb;">
 
     <div style="border-left:4px solid #2563eb;padding-left:16px;margin-bottom:28px;">
-      <p style="color:#2563eb;font-size:11px;font-weight:bold;text-transform:uppercase;letter-spacing:1px;margin:0 0 8px;">🎓 Ментор · Урок №{lesson_num}</p>
+      <p style="color:#2563eb;font-size:11px;font-weight:bold;text-transform:uppercase;letter-spacing:1px;margin:0 0 8px;">Ментор · Урок №{lesson_num}</p>
       {to_html(mentor_text)}
     </div>
 
     <hr style="border:none;border-top:1px solid #e5e7eb;margin:24px 0;">
 
     <div style="border-left:4px solid #059669;padding-left:16px;">
-      <p style="color:#059669;font-size:11px;font-weight:bold;text-transform:uppercase;letter-spacing:1px;margin:0 0 8px;">📊 Аналитик · Сводка по портфелю</p>
+      <p style="color:#059669;font-size:11px;font-weight:bold;text-transform:uppercase;letter-spacing:1px;margin:0 0 8px;">Аналитик · Сводка по портфелю</p>
       {to_html(analyst_text)}
     </div>
 
@@ -123,7 +126,7 @@ print("Отправляю письмо...")
 payload = json.dumps({
     "from": "my_prodject_invest <onboarding@resend.dev>",
     "to": [TO_EMAIL],
-    "subject": f"📈 Урок #{lesson_num} + сводка по портфелю · {today}",
+    "subject": f"Урок #{lesson_num} + сводка по портфелю · {today}",
     "html": html_email
 }).encode("utf-8")
 
