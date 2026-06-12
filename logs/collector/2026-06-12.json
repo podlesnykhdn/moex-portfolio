@@ -1,7 +1,7 @@
 {
   "meta": {
     "date": "2026-06-12",
-    "time": "14:22",
+    "time": "17:52",
     "month": 6,
     "weekday": 4,
     "is_friday": true
@@ -21,39 +21,39 @@
     "is_cached": false
   },
   "portfolio": {
-    "total_value": 225180.0,
-    "total_change": 320.0,
-    "total_pct": 0.14,
+    "total_value": 225284.0,
+    "total_change": 424.0,
+    "total_pct": 0.19,
     "positions": [
       {
         "ticker": "X5",
         "name": "Корп. центр X5",
         "qty": 42,
-        "price": 2400,
-        "change": 7,
-        "pct": -71.0,
-        "value": 100800,
-        "day_rub": 294
+        "price": 2397,
+        "change": 4,
+        "pct": -83.0,
+        "value": 100674,
+        "day_rub": 168
       },
       {
         "ticker": "LENT",
         "name": "Лента",
         "qty": 53,
-        "price": 1828.5,
-        "change": -1.5,
-        "pct": -108.0,
-        "value": 96910.0,
-        "day_rub": -80.0
+        "price": 1833,
+        "change": 3,
+        "pct": -84.0,
+        "value": 97149,
+        "day_rub": 159
       },
       {
         "ticker": "SBER",
         "name": "Сбербанк",
         "qty": 74,
-        "price": 322.34,
-        "change": 1.14,
-        "pct": -65.0,
-        "value": 23853.0,
-        "day_rub": 84.0
+        "price": 322.22,
+        "change": 1.02,
+        "pct": -68.0,
+        "value": 23844.0,
+        "day_rub": 75.0
       },
       {
         "ticker": "BELU",
@@ -83,121 +83,121 @@
       "prev": 301.4,
       "change": 1.8,
       "pct": -40.0,
-      "volume": 5273773
+      "volume": 6311431
     },
     "LENT": {
-      "price": 1828.5,
-      "prev": 1828.5,
-      "change": -1.5,
-      "pct": -108.0,
-      "volume": 1970573
+      "price": 1833,
+      "prev": 1833,
+      "change": 3,
+      "pct": -84.0,
+      "volume": 3571632
     },
     "SBER": {
-      "price": 322.34,
-      "prev": 322.34,
-      "change": 1.14,
-      "pct": -65.0,
-      "volume": 323815794
+      "price": 322.22,
+      "prev": 322.22,
+      "change": 1.02,
+      "pct": -68.0,
+      "volume": 369550826
     },
     "X5": {
-      "price": 2400,
-      "prev": 2400,
-      "change": 7,
-      "pct": -71.0,
-      "volume": 58166275
+      "price": 2397,
+      "prev": 2397,
+      "change": 4,
+      "pct": -83.0,
+      "volume": 66834101
     }
   },
   "screener": {
     "top_volume": [
       {
-        "ticker": "VTBR",
-        "name": "ВТБ ао",
-        "price": 75.78,
-        "prev": 75.78,
-        "change": 0.0,
-        "pct": 0.0,
-        "volume": 584212552
-      },
-      {
         "ticker": "PLZL",
         "name": "Полюс",
-        "price": 2000,
-        "prev": 2000,
+        "price": 2015,
+        "prev": 2015,
         "change": 0,
         "pct": 0.0,
-        "volume": 570011272
+        "volume": 672137199
+      },
+      {
+        "ticker": "VTBR",
+        "name": "ВТБ ао",
+        "price": 75.81,
+        "prev": 75.81,
+        "change": 0.0,
+        "pct": 0.0,
+        "volume": 653207646
       },
       {
         "ticker": "SBER",
         "name": "Сбербанк",
-        "price": 322.31,
-        "prev": 322.31,
+        "price": 322.22,
+        "prev": 322.22,
         "change": 0.0,
         "pct": 0.0,
-        "volume": 323816439
+        "volume": 369550826
       },
       {
         "ticker": "LKOH",
         "name": "ЛУКОЙЛ",
-        "price": 4703,
-        "prev": 4703,
+        "price": 4696,
+        "prev": 4696,
         "change": 0,
         "pct": 0.0,
-        "volume": 270095984
+        "volume": 306084994
       },
       {
         "ticker": "SMLT",
         "name": "Самолет ао",
-        "price": 398.4,
-        "prev": 398.4,
+        "price": 397.6,
+        "prev": 397.6,
         "change": 0.0,
         "pct": 0.0,
-        "volume": 268094447
+        "volume": 299185823
       },
       {
         "ticker": "ROSN",
         "name": "Роснефть",
-        "price": 363.6,
-        "prev": 363.6,
+        "price": 362.75,
+        "prev": 362.75,
         "change": 0.0,
         "pct": 0.0,
-        "volume": 214301462
+        "volume": 252271162
       },
       {
         "ticker": "GAZP",
         "name": "ГАЗПРОМ ао",
-        "price": 112.4,
-        "prev": 112.4,
+        "price": 112.35,
+        "prev": 112.35,
         "change": 0.0,
         "pct": 0.0,
-        "volume": 204420515
+        "volume": 222402183
       },
       {
         "ticker": "GMKN",
         "name": "ГМКНорНик",
-        "price": 129.16,
-        "prev": 129.16,
+        "price": 129.44,
+        "prev": 129.44,
         "change": 0.0,
         "pct": 0.0,
-        "volume": 200868581
-      },
-      {
-        "ticker": "CNRU",
-        "name": "iЦиан",
-        "price": 654,
-        "prev": 654,
-        "change": 0,
-        "pct": 0.0,
-        "volume": 191623100
+        "volume": 216446610
       },
       {
         "ticker": "AFKS",
         "name": "Система ао",
-        "price": 13.27,
-        "prev": 13.27,
+        "price": 13.28,
+        "prev": 13.28,
         "change": 0.0,
         "pct": 0.0,
-        "volume": 171708027
+        "volume": 202696227
+      },
+      {
+        "ticker": "CNRU",
+        "name": "iЦиан",
+        "price": 655,
+        "prev": 655,
+        "change": 0,
+        "pct": 0.0,
+        "volume": 197683486
       }
     ],
     "cheap_growth": []
@@ -274,8 +274,8 @@
         "id": "SANCTIONS_NEW",
         "signal": "danger",
         "message": "Новые санкционные риски — общий негатив для российского рынка",
-        "news_title": "Киев ввел санкции против российских СМИ",
-        "source": "РБК",
+        "news_title": "Новые санкции ЕС против рыбной промышленности РФ могут ударить по Германии",
+        "source": "Ведомости",
         "portfolio_impact": {
           "SBER": {
             "signal": "high_risk",
@@ -318,7 +318,7 @@
     {
       "rule_id": "SANCTIONS_NEW",
       "signal": "danger",
-      "message": "Новые санкционные риски — общий негатив для российского рынка (РБК): Киев ввел санкции против российских СМИ",
+      "message": "Новые санкционные риски — общий негатив для российского рынка (Ведомости): Новые санкции ЕС против рыбной промышленности РФ могут ударить по Германии",
       "portfolio_impact": {
         "SBER": {
           "signal": "high_risk",
